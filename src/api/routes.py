@@ -1,7 +1,6 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import datetime
 from flask import  request, jsonify, Blueprint
 from api.models import db, User
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, get_jwt
