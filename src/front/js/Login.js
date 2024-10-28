@@ -8,7 +8,7 @@ export default function Login() {
     try {
       if (Object.values(inputValues).length) {
         const rawResponse = await fetch(
-          `${process.env.BACKEND_URL}/api/login`,
+          `${process.env.BACKEND_URL}/login`,
           {
             method: "POST",
             headers: {

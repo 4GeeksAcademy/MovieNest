@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import styles from "/workspaces/MovieNest/src/front/styles/home.css";
 
 export default function Home() {
+  const navigate = useNavigate();
+
   return (
     <div className="container">
       <header>
@@ -13,6 +15,7 @@ export default function Home() {
             <li>TV Shows</li>
             <li>Movies</li>
             <li>My List</li>
+            <a href="/login">Login</a>
           </ul>
         </nav>
       </header>
