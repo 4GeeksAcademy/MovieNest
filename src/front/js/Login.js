@@ -5,18 +5,18 @@ export default function Login() {
   const [inputValues, setInputValues] = useState({ email: "", password: "" });
 
   const onLogin = async () => {
+    console.log("trying to get your info");
+    console.log(process.env.BACKEND_URL);
+    
     try {
       if (Object.values(inputValues).length) {
-        const rawResponse = await fetch(
-          `${process.env.BACKEND_URL}/api/login`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(inputValues),
-          }
-        );
+        const rawResponse = await fetch(`${process.env.BACKEND_URL}/login`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(inputValues),
+        });
         const translatedResponse = await rawResponse.json();
 
         sessionStorage.setItem("token", translatedResponse.access_token);
