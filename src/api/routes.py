@@ -59,18 +59,18 @@ def get_private_data():
 
     return jsonify({ "message": "Token is not valid"}), 401
 
-@api.route("/favorites", methods=['GET'])
-@jwt_required()
-def favorites():    
-    #get all favorites for current user
+# @api.route("/favorites", methods=['GET'])
+# @jwt_required()
+# def favorites():    
+#     #get all favorites for current user
 
-    current_user_email= get_jwt_identity()
-    request_data= request.get_json()
-    current_user_email= request_data.get("email")
-    user= User.query.filter_by(email= current_user_email).first()
-    if not user:
-        return jsonify({"message":"user not found"}), 404
+#     current_user_email= get_jwt_identity()
+#     request_data= request.get_json()
+#     current_user_email= request_data.get("email")
+#     user= User.query.filter_by(email= current_user_email).first()
+#     if not user:
+#         return jsonify({"message":"user not found"}), 404
     
-    favorites= Favorite.query.filter_by(user_id= user.id).all()
-    return jsonify([favorite.serialize() for favorite in favorites]), 200
+#     favorites= Favorite.query.filter_by(user_id= user.id).all()
+#     return jsonify([favorite.serialize() for favorite in favorites]), 200
     
