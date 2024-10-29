@@ -105,15 +105,14 @@ def delete_favorite(favorite_id):
 
 @api.route('/favorites', methods=['GET'])
 @jwt_required()
-def get_user_favorites():
-    user_id = get_jwt_identity() 
+def favorites():
+    #get all favorites for current user
 
-    user = User.query.filter_by(email=user_id).first()
+    current_user_email= get_jwt_identity()
+    request_data= request.get_json()
+    current_user_email= request_data.get('email')
+    user= User.query.filter_by(email= current_user_email).first()
     if not user:
-        return jsonify({"message": "User not found"}), 404
-
-
-    favorites = Favorite.query.filter_by(user_id=user.id).all()
-    favorites_list = [favorite.serialize() for favorite in favorites]
-
-    return jsonify(favorites_list), 200
+        return jsonify({'message':'user not found'}), 404
+    favorites= Favorite.query.filter_by(user_id= user.id).all()
+    return jsonify([favorite.serialize() for favorite in favorites]), 200
