@@ -1,24 +1,90 @@
+import React from "react";
+import { useNavigate, Link } from "react-router-dom";
+import styles from "/workspaces/MovieNest/src/front/styles/home.css";// Link your CSS file here for styling
+
+export default function Home() {
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <header>
+        <div className="logo">MovieNest</div>
+        <nav>
+          <ul>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/tvshows">TV Shows</Link></li>
+            <li><Link to="/movies">Movies</Link></li>
+            <li><Link to="/mylist">My List</Link></li>
+          </ul>
+        </nav>
+      </header>
+
+      <main>
+        <section className="welcome-section">
+          <h1>Welcome to MovieNest</h1>
+          <p>Discover trending movies and shows, tailored just for you!</p>
+          <button onClick={() => navigate("/login")} className="login-button">
+            Click to Login
+          </button>
+          <p>
+            Don't have an account yet? <Link to="/signup">Signup now</Link>
+          </p>
+        </section>
+
+        <section className="carousel">
+          <h2>Trending Now</h2>
+          <div className="carousel-container">
+            <div className="carousel-item">
+              <img src="image1.jpg" alt="Movie 1" />
+              <p>Movie Title 1</p>
+            </div>
+            <div className="carousel-item">
+              <img src="image2.jpg" alt="Movie 2" />
+              <p>Movie Title 2</p>
+            </div>
+            <div className="carousel-item">
+              <img src="image3.jpg" alt="Movie 3" />
+              <p>Movie Title 3</p>
+            </div>
+            {/* Add more carousel items as needed */}
+          </div>
+        </section>
+      </main>
+
+      <footer>
+        <p>&copy; 2024 MovieNest. All rights reserved.</p>
+      </footer>
+    </>
+  );
+}
+
+
+
+
+
+
+
 // import React from "react";
-// import { useNavigate } from "react-router-dom";
+//  import { useNavigate } from "react-router-dom";
 
-// // export default function Home() {
-// //   const navigate = useNavigate();
+//  export default function Home() {
+//    const navigate = useNavigate();
 
-// //   return (
-// //     <div>
-// //       <h1>Home</h1>
-// //       <p>This is my very amazing website, you can find an access route below</p>
-// //       <button
-// //         onClick={() => {
-// //           navigate("/login");
-// //         }}
-// //       >
-// //         Click to Login
-// //       </button>
-// //       <a href="/signup">Dont have an account yet? Signup now</a>
-// //     </div>
-// //   );
-// // }
+//    return (
+//      <div>
+//        <h1>Home</h1>
+//        <p>This is my very amazing website, you can find an access route below</p>
+//        <button
+//         onClick={() => {
+//           navigate("/login");
+//          }}
+//        >
+//          Click to Login
+//        </button>
+//        <a href="/signup">Dont have an account yet? Signup now</a>
+//      </div>
+//    );
+//  }
 
 // <!DOCTYPE html>
 // <html lang="en">
@@ -95,22 +161,6 @@
 // fetchMovies();
 
 
-// // this is just kinda a rough draft code to help us have an idea of things, we can sort the folders properly tomorrow
 
-import React from "react";
-import { useNavigate } from "react-router-dom";
 
-function Home() {
-  const navigate = useNavigate();
-
-  return (
-    <div>
-      <h1>Home</h1>
-      <p>This is my very amazing website, you can find an access route below.</p>
-      <button onClick={() => navigate("/login")}>Click to Login</button>
-      <a href="/signup">Don't have an account yet? Sign up now</a>
-    </div>
-  );
-}
-
-export default Home;
+// export default Home;
