@@ -36,7 +36,7 @@ export default function Home() {
 
         <section className="carousel">
           <Carousel/>
-          <h2>Trending Now</h2>
+          
           <div className="carousel-container">
             <div className="carousel-item">
               <img src="image1.jpg" alt="Movie 1" />

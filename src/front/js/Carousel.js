@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../styles/home.css";
+import MovieCard from "./MovieCard"
 
 function Carousel() {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     async function fetchMovies() {
-      try {
+        try {
         const response = await fetch(
           "https://api.themoviedb.org/3/discover/movie",
           {
@@ -44,7 +45,17 @@ function Carousel() {
     <section className="carousel">
       <h2 className="text-3xl font-bold mb-6">Trending Now</h2>
       <div className="carousel-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {movies?.map(movie => (
+        {
+          movies.slice(0, 10).map(movie => (
+            <div className="d-block" key={movie.id}>
+              <MovieCard name={movie.original_title} overview={movie.overview} />
+            </div>
+            
+          ))
+        }
+                       
+        
+        {/* {movies?.map(movie => (
           <div 
             key={movie.id} 
             className="carousel-item bg-white rounded-lg shadow-lg overflow-hidden"
@@ -52,7 +63,7 @@ function Carousel() {
             <div className="relative">
               <img 
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
-                alt={movie.title}
+                alt={movie.original_title}
                 className="w-full h-[400px] object-cover"
               />
               <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded-full">
@@ -81,7 +92,7 @@ function Carousel() {
               </div>
             </div>
           </div>
-        ))}
+        ))}  */}
       </div>
     </section>
   );
