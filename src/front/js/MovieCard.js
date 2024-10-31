@@ -1,17 +1,3 @@
-// import React from "react";
-
-// function MovieCard({ name, overview, poster }) {
-//     return (
-//         <div>
-//             <h3>{name}</h3>
-//             <p>{overview}</p>
-//             <img src={poster} alt={`${name} poster`} />
-//         </div>
-//     );
-// }
-
-// export default MovieCard;
-
 import React from "react";
 
 function MovieCard({ name, overview, poster, voteAverage, releaseDate }) {
@@ -20,7 +6,6 @@ function MovieCard({ name, overview, poster, voteAverage, releaseDate }) {
       <div className="movie-poster">
         <img 
           src={`https://image.tmdb.org/t/p/w500${poster}`} 
-          alt={`${name} poster`} 
         />
         <div className="rating">⭐ {voteAverage?.toFixed(1)}</div>
       </div>
