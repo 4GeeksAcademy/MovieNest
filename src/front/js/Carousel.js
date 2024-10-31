@@ -53,49 +53,21 @@ function Carousel() {
             
           ))
         }
-                       
-        
-        {/* {movies?.map(movie => (
-          <div 
-            key={movie.id} 
-            className="carousel-item bg-white rounded-lg shadow-lg overflow-hidden"
-          >
-            <div className="relative">
-              <img 
-                src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`} 
-                alt={movie.original_title}
-                className="w-full h-[400px] object-cover"
-              />
-              <div className="absolute top-2 right-2 bg-yellow-400 text-black px-2 py-1 rounded-full">
-                ⭐ {movie.vote_average.toFixed(1)}
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <h3 className="font-bold text-xl mb-2">{movie.title}</h3>
-              <p className="text-gray-600 text-sm mb-2">
-                {formatDate(movie.release_date)}
-              </p>
-              <p className="text-gray-700 text-sm line-clamp-3">
-                {movie.overview}
-              </p>
-              
-              <div className="mt-4 flex justify-between items-center">
-                <span className="text-sm text-gray-500">
-                  Votes: {movie.vote_count}
-                </span>
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                  movie.adult ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-                }`}>
-                  {movie.adult ? '18+' : 'All Ages'}
-                </span>
-              </div>
-            </div>
-          </div>
-        ))}  */}
       </div>
     </section>
   );
+
+  {movies.slice(0, 10).map(movie => (
+    <div className="movie-card-container" key={movie.id}>
+      <MovieCard 
+        name={movie.original_title}
+        overview={movie.overview}
+        poster={movie.poster_path}
+        voteAverage={movie.vote_average}
+        releaseDate={movie.release_date}
+      />
+    </div>
+  ))}
 }
 
 export default Carousel;
