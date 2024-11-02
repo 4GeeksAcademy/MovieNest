@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../styles/home.css";
-import MovieCard from "./MovieCard"
+import MovieCard from "./MovieCard";
 
-function Carousel() {
+const Carousel = () => {
   const [movies, setMovies] = useState([]);
 
   useEffect(() => {
     async function fetchMovies() {
-        try {
+      try {
         const response = await fetch(
           "https://api.themoviedb.org/3/discover/movie",
           {
@@ -17,13 +17,13 @@ function Carousel() {
             },
           }
         );
-        
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        
+
         const data = await response.json();
-        console.log('Movie data:', data.results); // For debugging
+        console.log("Movie data:", data.results); // For debugging
         setMovies(data.results);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -34,10 +34,10 @@ function Carousel() {
   }, []);
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
+    return new Date(dateString).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     });
   };
 
@@ -45,29 +45,19 @@ function Carousel() {
     <section className="carousel">
       <h2 className="text-3xl font-bold mb-6">Trending Now</h2>
       <div className="carousel-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {
-          movies.slice(0, 10).map(movie => (
-            <div className="d-block" key={movie.id}>
-              <MovieCard name={movie.original_title} overview={movie.overview} />
-            </div>
-            
-          ))
-        }
+        {movies.slice(0, 10).map((movie) => (
+          <div className="d-block" key={movie.id}>
+            <MovieCard
+              name={movie.original_title}
+              overview={movie.overview}
+              poster={movie.poster_path}
+              voteAverage={movie.vote_average}
+              releaseDate={movie.release_date}
+            />
+          </div>
+        ))}
       </div>
     </section>
   );
-
-  {movies.slice(0, 10).map(movie => (
-    <div className="movie-card-container" key={movie.id}>
-      <MovieCard 
-        name={movie.original_title}
-        overview={movie.overview}
-        poster={movie.poster_path}
-        voteAverage={movie.vote_average}
-        releaseDate={movie.release_date}
-      />
-    </div>
-  ))}
-}
-
+};
 export default Carousel;
