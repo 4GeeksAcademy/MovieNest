@@ -1,21 +1,38 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import "./Navbar.css";
+// import React, { useContext } from "react";
+// import { AuthContext } from "./AuthContext";
+// import { useNavigate } from "react-router-dom";
 
-function Navbar() {
-  return (
-    <header className="navbar">
-      <div className="logo">MovieNest</div>
-      <nav>
-        <ul>
-          <li><Link to="/">Home</Link></li>
-          <li><Link to="/tv-shows">TV Shows</Link></li>
-          <li><Link to="/movies">Movies</Link></li>
-          <li><Link to="/my-list">My List</Link></li>
-        </ul>
-      </nav>
-    </header>
-  );
-}
+// const Navbar = () => {
+//   const { isAuthenticated, logout } = useContext(AuthContext);
+//   const navigate = useNavigate();
 
-export default Navbar;
+//   return (
+//     <nav className="navbar">
+//       <h1 className="navbar-brand">MovieNest</h1>
+//       <ul className="navbar-nav">
+//         <li className="nav-item">
+//           <a className="nav-link" href="/">
+//             Home
+//           </a>
+//         </li>
+//         <li className="nav-item">
+//           <a className="nav-link" href="/tv-shows">
+//             TV Shows
+//           </a>
+//         </li>
+//         <li className="nav-item">
+//           <a className="nav-link" href="/movies">
+//             Movies
+//           </a>
+//         </li>
+//         <li className="nav-item">
+//           <a className="nav-link" href="/my-list">
+//             My List
+//           </a>
+//         </li>
+//       </ul>
+//     </nav>
+//   );
+// };
+
+// export default Navbar;

@@ -1,37 +1,34 @@
 import React from "react";
+import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Logout = () => {
-  const sessionToken = sessionStorage.getItem("token");
-  const localStorageToken = localStorage.getItem("token");
-
-  if (!sessionToken || !localStorageToken) {
-    return null;
-  }
-
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const onLogout = async () => {
     try {
-      if (sessionToken || localStorageToken) {
-        await fetch(`${process.env.BACKEND_URL}/api/logout`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorageToken ?? sessionToken}`,
-          },
-        });
+      const response = await fetch(`${process.env.BACKEND_URL}/api/logout`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
 
-        sessionStorage.removeItem("token");
-        localStorage.removeItem("token");
-
-        navigate("/");
+      if (!response.ok) {
+        throw new Error("Error with Logout");
       }
+
+      sessionStorage.removeItem("token");
+      localStorage.removeItem("token");
+      logout();
+      navigate("/");
     } catch (error) {
-      console.error(error);
+      console.error("Error with logout:", error);
     }
   };
 
-  return <button onClick={onLogout}>Click to Logout</button>;
+  return "";
 };
 
 export default Logout;

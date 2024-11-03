@@ -23,9 +23,12 @@ def login_user():
 
     if user:
         access_token = create_access_token(identity=email)
-        return jsonify({ "access_token": access_token }), 200
+        return jsonify({
+            "access_token": access_token,
+            "username": user.username  # Asegúrate de incluir el username aquí
+        }), 200
 
-    return jsonify({ "message": "The user doesnt exist"}), 404
+    return jsonify({"message": "The user doesn't exist"}), 404
 
 @api.route('/signup', methods=['POST'])
 def create_user():
@@ -33,14 +36,34 @@ def create_user():
     email = request_data.get("email")
     password = request_data.get("password")
 
-    new_user = User(email=email, password=password, is_active=True)
+    if not email or not password:
+        return jsonify({"message": "Email & password required"}), 400
 
-    db.session.add(new_user)
-    db.session.commit()
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"message": "Email already exists"}), 400
 
-    access_token = create_access_token(identity=email)
+    # Generar un username autoincremental
+    last_user = User.query.order_by(User.id.desc()).first()
+    new_username = f"usuario{(last_user.id + 1) if last_user else 1}"
 
-    return jsonify({ "access_token": access_token }), 200
+    new_user = User(username=new_username, email=email, password=password, is_active=True)
+    
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+
+        access_token = create_access_token(identity=email)
+    
+        return jsonify({
+            "message": "Success",
+            "token": access_token
+        }), 201
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": "Error"}), 500
+
 
 @api.route('/logout', methods=['POST'])
 @jwt_required()

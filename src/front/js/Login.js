@@ -1,35 +1,58 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
+import styles from "../styles/login.css";
 
 export default function Login() {
   const [inputValues, setInputValues] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
   const onLogin = async () => {
-    console.log("trying to get your info");
-    console.log(process.env.BACKEND_URL);
-    
-    try {
-      if (Object.values(inputValues).length) {
-        const rawResponse = await fetch(`${process.env.BACKEND_URL}/login`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(inputValues),
-        });
-        const translatedResponse = await rawResponse.json();
+    setErrorMessage("");
 
-        sessionStorage.setItem("token", translatedResponse.access_token);
-        localStorage.setItem("token", translatedResponse.access_token);
+    if (!inputValues.email || !inputValues.password) {
+      setErrorMessage("Please, fill");
+      return;
+    }
+
+    try {
+      const rawResponse = await fetch(`${process.env.BACKEND_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(inputValues),
+      });
+
+      if (!rawResponse.ok) {
+        throw new Error("Try Again");
+      }
+
+      const translatedResponse = await rawResponse.json();
+
+      console.log(translatedResponse);
+
+      const token = translatedResponse.access_token;
+      const username = translatedResponse.username;
+
+      if (token) {
+        login(token, { username });
+        navigate("/");
+      } else {
+        setErrorMessage("Login Failed.");
       }
     } catch (error) {
       console.error(error);
+      setErrorMessage("Try Again");
     }
   };
 
   return (
-    <div>
+    <div className="login-container">
       <h1>Login</h1>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
 
       <input
         type="email"
@@ -41,7 +64,8 @@ export default function Login() {
           }));
         }}
         value={inputValues.email}
-        placeholder="email"
+        placeholder="E-mail"
+        className="input-field"
       />
       <input
         type="password"
@@ -53,9 +77,12 @@ export default function Login() {
           }));
         }}
         value={inputValues.password}
-        placeholder="password"
+        placeholder="Password"
+        className="input-field"
       />
-      <button onClick={onLogin}>Click to Login!</button>
+      <button onClick={onLogin} className="login-button">
+        Click to Login!
+      </button>
     </div>
   );
 }
