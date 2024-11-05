@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Navbar from "./Navbar";
+import "../styles/movieDetail.css";
 
 const MovieDetail = () => {
-  const { id } = useParams(); 
+  const { id } = useParams();
   const [movie, setMovie] = useState(null);
 
   useEffect(() => {
@@ -34,23 +35,77 @@ const MovieDetail = () => {
   }, [id]);
 
   if (!movie) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>;
   }
 
   return (
-    <div className="movie-detail">
-    <Navbar />
-      <h1>{movie.title}</h1>
-      <img
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-        alt={movie.title}
-      />
-      <p><strong>Rating:</strong> {movie.vote_average}</p>
-      <p><strong>Genres:</strong> {movie.genres.map(genre => genre.name).join(", ")}</p>
-      <p><strong>Overview:</strong> {movie.overview}</p>
-      <p><strong>Release Date:</strong> {movie.release_date}</p>
-      
-    </div>
+    <>
+      <Navbar />
+      <div className="movie-detail-container">
+        <div className="movie-detail-content">
+
+          <div className="movie-detail-image">
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+              alt={movie.title}
+            />
+          </div>
+
+
+          <div>
+            <h1 className="movie-detail-title">{movie.title}</h1>
+
+            <div className="movie-detail-info">
+              <span>{movie.release_date?.split('-')[0]}</span>
+              <span>•</span>
+              <span>{Math.floor(movie.runtime / 60)}h {movie.runtime % 60}m</span>
+              <span>•</span>
+              <span>{movie.vote_average?.toFixed(1)} Rating</span>
+            </div>
+
+
+            <div className="movie-detail-genres">
+              {movie.genres?.map((genre) => (
+                <span
+                  key={genre.id}
+                  className="genre-badge"
+                >
+                  {genre.name}
+                </span>
+              ))}
+            </div>
+
+
+            <div className="movie-detail-overview">
+              <h2>Overview</h2>
+              <p>{movie.overview}</p>
+            </div>
+
+            {/* Additional Details */}
+            <div className="additional-details">
+              <div>
+                <p>Status</p>
+                <p>{movie.status}</p>
+              </div>
+              <div>
+                <p>Original Language</p>
+                <p>{movie.original_language?.toUpperCase()}</p>
+              </div>
+              {movie.budget > 0 && (
+                <div>
+                  <p>Budget</p>
+                  <p>${movie.budget?.toLocaleString()}</p>
+                </div>
+              )}
+              <div>
+                <p>Vote Count</p>
+                <p>{movie.vote_count?.toLocaleString()}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
 };
 

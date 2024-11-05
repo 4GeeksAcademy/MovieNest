@@ -1,0 +1,82 @@
+.movie-detail-container {
+    background-color: #0f172a;
+    min-height: 100vh;
+    padding-top: 2rem;
+  }
+  
+  .movie-detail-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    gap: 2rem;
+    color: white;
+  }
+  
+  .movie-detail-image {
+    flex-shrink: 0;
+  }
+  
+  .movie-detail-image img {
+    width: 300px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .movie-detail-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+  
+  .movie-detail-info {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    color: #94a3b8;
+  }
+  
+  .movie-detail-genres {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  
+  .genre-badge {
+    padding: 0.25rem 1rem;
+    border-radius: 9999px;
+    background-color: rgba(51, 65, 85, 0.8);
+    font-size: 0.875rem;
+  }
+  
+  .movie-detail-overview {
+    margin-bottom: 1.5rem;
+  }
+  
+  .movie-detail-overview h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .movie-detail-overview p {
+    color: #cbd5e1;
+    line-height: 1.6;
+    max-width: 800px;
+  }
+  
+  .additional-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    background-color: rgba(51, 65, 85, 0.3);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+  
+  .additional-details div {
+    color: #94a3b8;
+    font-size: 0.875rem;
+  }
+  

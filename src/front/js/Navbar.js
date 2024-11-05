@@ -1,8 +1,7 @@
-// src/components/Navbar.js
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext"; // Importa tu contexto de autenticación
-import "../styles/navbar.css"; // Importa los estilos del navbar
+import { useAuth } from "./AuthContext"; 
+import "../styles/navbar.css"; 
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -28,6 +27,16 @@ const Navbar = () => {
           <li>
             <Link to="/favorites">Favorites</Link>
           </li>
+          {!isAuthenticated && (
+            <>
+              <li>
+                <Link to="/login" className="login-button">Login</Link>
+              </li>
+              <li>
+                <Link to="/signup" className="signup-button">Signup</Link>
+              </li>
+            </>
+          )}
           {isAuthenticated && (
             <li>
               <button className="logout-button" onClick={handleLogout}>
