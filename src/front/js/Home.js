@@ -1,52 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import styles from "/workspaces/MovieNest/src/front/styles/home.css";
 import Carousel from "./Carousel";
 import { useAuth } from "./AuthContext";
+import Navbar from "./Navbar";
+
 
 export default function Home() {
   const navigate = useNavigate();
-  const { isAuthenticated, username, logout } = useAuth();
+  const { isAuthenticated, username } = useAuth();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-  console.log("Username:", username);
   return (
     <>
-      <header>
-        <div className="logo">MovieNest</div>
-        <div>
-          {isAuthenticated ? <h2>Welcome, {username}!</h2> : <h2></h2>}
-
-          {isAuthenticated ? (
-            <button className="btn btn-danger" onClick={handleLogout}>
-              Click to logout
-            </button>
-          ) : (
-            <h2></h2>
-          )}
-        </div>
-
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/tvshows">TV Shows</Link>
-            </li>
-            <li>
-              <Link to="/movies">Movies</Link>
-            </li>
-            <li>
-              <Link to="/mylist">My List</Link>
-            </li>
-          </ul>
-        </nav>
-      </header>
-
+      <Navbar />
       <main>
         <section className="welcome-section">
           <h1>Welcome to MovieNest</h1>
@@ -65,13 +31,12 @@ export default function Home() {
               </p>
             </>
           )}
-        </section>
 
+        </section>
         <section className="carousel">
           <Carousel />
         </section>
       </main>
-
       <footer>
         <p>&copy; 2024 MovieNest. All rights reserved.</p>
       </footer>

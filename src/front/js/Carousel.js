@@ -1,3 +1,4 @@
+// src/components/Carousel.js
 import React, { useEffect, useState } from "react";
 import "../styles/home.css";
 import MovieCard from "./MovieCard";
@@ -23,7 +24,6 @@ const Carousel = () => {
         }
 
         const data = await response.json();
-        console.log("Movie data:", data.results); // For debugging
         setMovies(data.results);
       } catch (error) {
         console.error("Error fetching movies:", error);
@@ -33,14 +33,6 @@ const Carousel = () => {
     fetchMovies();
   }, []);
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
   return (
     <section className="carousel">
       <h2 className="text-3xl font-bold mb-6">Trending Now</h2>
@@ -48,6 +40,7 @@ const Carousel = () => {
         {movies.slice(0, 10).map((movie) => (
           <div className="d-block" key={movie.id}>
             <MovieCard
+              id={movie.id}
               name={movie.original_title}
               overview={movie.overview}
               poster={movie.poster_path}
@@ -60,4 +53,5 @@ const Carousel = () => {
     </section>
   );
 };
+
 export default Carousel;

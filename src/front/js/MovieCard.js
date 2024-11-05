@@ -1,6 +1,9 @@
+// src/components/MovieCard.js
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
-function MovieCard({ name, overview, poster, voteAverage, releaseDate }) {
+function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
+  const navigate = useNavigate();
   const fallbackImage = "/api/placeholder/300/450";
 
   return (
@@ -18,7 +21,12 @@ function MovieCard({ name, overview, poster, voteAverage, releaseDate }) {
         <h3 className="movie-title">{name}</h3>
         <p className="movie-date">{new Date(releaseDate).getFullYear()}</p>
         <p className="movie-overview">{overview}</p>
-        <button className="watch-btn">Watch Now</button>
+        <button
+          className="watch-btn"
+          onClick={() => navigate(`/movie/${id}`)} 
+        >
+          Learn more
+        </button>
       </div>
     </div>
   );
