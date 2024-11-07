@@ -239,3 +239,21 @@ footer {
   gap: 2rem;
   padding: 1rem 0;
 }
+
+.movie-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.favorite-btn {
+  font-size: 20px;
+  background: none;
+  border: none;
+  color: gold;
+  cursor: pointer;
+}
+
+.favorite-btn.filled {
+  color: #ffcc00; /* Color dorado para estrella llena */
+}

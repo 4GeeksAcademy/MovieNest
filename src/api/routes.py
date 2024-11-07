@@ -96,7 +96,6 @@ def add_favorite():
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-
     existing_favorite = Favorite.query.filter_by(user_id=user.id, movie_id=movie_id).first()
     if existing_favorite:
         return jsonify({"message": "Movie already in favorites"}), 400
