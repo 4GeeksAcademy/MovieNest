@@ -1,35 +1,38 @@
-// src/components/Favorites.js
+
 import React, { useEffect, useState } from "react";
-import MovieCard from "./MovieCard"; // Reuse the MovieCard styling
+import MovieCard from "./MovieCard"; 
 import "../styles/home.css";
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
 
-  // Fetch favorites from the API
+
   useEffect(() => {
     async function fetchFavorites() {
       try {
         const response = await fetch(`${process.env.BACKEND_URL}/favorites`, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
             "Content-Type": "application/json",
           },
         });
+
+        console.log(`${localStorage.getItem("token")}`)
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-
+  
         const data = await response.json();
         setFavorites(data);
       } catch (error) {
         console.error("Error fetching favorites:", error);
       }
     }
-
+  
     fetchFavorites();
   }, []);
+  
 
   return (
     <section className="favorites-section">
@@ -40,8 +43,8 @@ const Favorites = () => {
             key={movie.id}
             id={movie.movie_id}
             name={movie.movie_name}
-            overview={""} // Optionally exclude overview for favorites
-            poster={movie.poster} // Adjust backend to send this
+            overview={""} 
+            poster={movie.poster} 
           />
         ))}
       </div>
