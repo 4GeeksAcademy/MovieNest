@@ -7,6 +7,7 @@ import MovieDetail from "./MovieDetail"
 
 import Login from "./Login";
 import Logout from "./Logout";
+import Favorites from "./Favorite ";
 
 const Layout = () => {
   const basename = process.env.BASENAME || "";
@@ -21,6 +22,7 @@ const Layout = () => {
           <Route element={<RegisterUser />} path="/signup" />
           <Route element={<MovieDetail />} path="/movie/:id" />
           <Route element={<Private />} path="/private" />
+          <Route element={<Favorites />} path="/favorites" />
           <Route element={<h1>Not found!</h1>} />
         </Routes>
       </BrowserRouter>
