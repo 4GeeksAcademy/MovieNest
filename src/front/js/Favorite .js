@@ -49,4 +49,38 @@ const Favorites = () => {
   );
 };
 
+// const fetchFavorites = async () => {
+//   try {
+//     const response = await fetch("http://your-api-url/favorites"); // Replace with the correct URL
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+//     const data = await response.json(); // This line will throw an error if the response is not JSON
+//     setFavorites(data);
+//   } catch (error) {
+//     console.error("Error fetching favorites:", error);
+//   }
+// };
+
+// const fetchFavorites = async () => {
+//   try {
+//     const response = await fetch("http://your-api-url/favorites");
+//     if (!response.ok) {
+//       throw new Error(`HTTP error! status: ${response.status}`);
+//     }
+
+//     // Attempt to parse JSON only if response is valid
+//     const contentType = response.headers.get("content-type");
+//     if (contentType && contentType.includes("application/json")) {
+//       const data = await response.json();
+//       setFavorites(data);
+//     } else {
+//       throw new Error("Received non-JSON response from server");
+//     }
+//   } catch (error) {
+//     console.error("Error fetching favorites:", error);
+//   }
+// };
+
+
 export default Favorites;
