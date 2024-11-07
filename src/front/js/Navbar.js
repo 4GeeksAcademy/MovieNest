@@ -16,7 +16,9 @@ const Navbar = () => {
   return (
     <header className="navbar">
       <div className="logo">
-       <h2>MovieNest</h2>
+       <h2>
+        <Link to="/">MovieNest</Link>
+        </h2>
       </div>
       
       <nav>

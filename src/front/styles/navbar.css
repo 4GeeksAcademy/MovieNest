@@ -1,19 +1,38 @@
+/* Estilos para todos los botones (Login, Signup y Logout) */
 .login-button, .signup-button, .logout-button {
-    background-color: #e11d48; 
-    color: white; 
-    border: none;
-    padding: 12px 20px; 
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease; 
-  }
-  
-  .login-button:hover, .signup-button:hover, .logout-button:hover {
-    background-color: #8d132d;
-  }
-  
-  .nav-links li {
-    display: inline;
-    margin-right: 15px; 
-  }
-  
+  background-color: #e11d48;
+  color: white;
+  border: none;
+  padding: 8px 16px; /* Ajuste de tamaño */
+  font-size: 0.875rem; /* Tamaño de texto uniforme */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: inline-block; /* Asegura que los botones tengan el mismo comportamiento de tamaño */
+  text-align: center;
+  min-width: 80px; /* Ancho mínimo para uniformidad */
+}
+
+.login-button:hover, .signup-button:hover, .logout-button:hover {
+  background-color: #8d132d;
+}
+
+/* Estilo específico para la lista de enlaces de navegación */
+.nav-links {
+  list-style-type: none;
+  display: flex;
+  gap: 15px; /* Espaciado uniforme entre enlaces */
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-links li {
+  display: flex;
+}
+
+/* Estilos para el logo */
+.logo h2 a {
+  text-decoration: none;
+  color: inherit;
+}
