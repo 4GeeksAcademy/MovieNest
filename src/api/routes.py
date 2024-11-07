@@ -125,8 +125,6 @@ def delete_favorite(favorite_id):
     db.session.commit()
 
     return jsonify({"message": "Favorite deleted"}), 200
-<<<<<<< Updated upstream
-=======
 
 @api.route('/favorites', methods=['GET'])
 @jwt_required()
@@ -140,4 +138,3 @@ def favorites():
     favorites = Favorite.query.filter_by(user_id=user.id).all()
 
     return jsonify([favorite.serialize() for favorite in favorites]), 200
->>>>>>> Stashed changes
