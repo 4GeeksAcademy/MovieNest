@@ -22,7 +22,7 @@ def login_user():
     user = User.query.filter_by(email=email).filter_by(password=password).first()
 
     if user:
-        access_token = create_access_token(identity=email)
+        access_token = create_access_token(identity=user.id)
         return jsonify({
             "access_token": access_token,
             "username": user.username  # Asegúrate de incluir el username aquí
@@ -53,7 +53,7 @@ def create_user():
         db.session.add(new_user)
         db.session.commit()
 
-        access_token = create_access_token(identity=email)
+        access_token = create_access_token(identity=new_user.id)
     
         return jsonify({
             "message": "Success",
@@ -92,13 +92,14 @@ def add_favorite():
     movie_id = request_data.get("movie_id")
     movie_name = request_data.get("movie_name")
 
-    user = User.query.filter_by(email=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    existing_favorite = Favorite.query.filter_by(user_id=user.id, movie_id=movie_id).first()
-    if existing_favorite:
-        return jsonify({"message": "Movie already in favorites"}), 400
+    favorites= Favorite.query.filter_by(user_id=user.id)
+    for favorite in favorites:
+        if favorite.movie_id == movie_id:
+            return jsonify({"message": "Movie already in favorites"}), 400
 
     new_favorite = Favorite(user_id=user.id, movie_id=movie_id, movie_name=movie_name)
     db.session.add(new_favorite)
@@ -106,31 +107,44 @@ def add_favorite():
 
     return jsonify(new_favorite.serialize()), 201
 
-@api.route('/favorites/<int:favorite_id>', methods=['DELETE'])
+@api.route('/favorites/<int:movie_id>', methods=['DELETE'])
 @jwt_required()
-def delete_favorite(favorite_id):
+def delete_favorite(movie_id):
     user_id = get_jwt_identity() 
 
-    user = User.query.filter_by(email=user_id).first()
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({"message": "User not found"}), 404
 
+    print("############ movie_id",movie_id)
+    favorites= Favorite.query.filter_by(user_id=user.id)
+    print("####################### favorites list",favorites)
+    for favorite in favorites:
+        if favorite.movie_id == movie_id:
+            db.session.delete(favorite)
+            db.session.commit()
+            return jsonify({"message": "Favorite deleted"}), 200
+    
+    return jsonify({"message": "Favorite not found"}), 404
 
-    favorite = Favorite.query.filter_by(id=favorite_id, user_id=user.id).first()
-    if not favorite:
-        return jsonify({"message": "Favorite not found"}), 404
+# @api.route('/favorites', methods=['GET'])
+# @jwt_required()
+# def favorites():
 
-    db.session.delete(favorite)
-    db.session.commit()
+#     current_user_email = get_jwt_identity()
+#     user = User.query.filter_by(email=current_user_email).first()
+#     if not user:
+#         return jsonify({'message': 'User not found'}), 404
 
-    return jsonify({"message": "Favorite deleted"}), 200
+#     favorites = Favorite.query.filter_by(user_id=user.id).all()
+
+#     return jsonify([favorite.serialize() for favorite in favorites]), 200
 
 @api.route('/favorites', methods=['GET'])
 @jwt_required()
 def favorites():
-
-    current_user_email = get_jwt_identity()
-    user = User.query.filter_by(email=current_user_email).first()
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({'message': 'User not found'}), 404
 

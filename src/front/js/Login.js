@@ -18,7 +18,7 @@ export default function Login() {
     }
 
     try {
-      const rawResponse = await fetch(`${process.env.BACKEND_URL}/login`, {
+      const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

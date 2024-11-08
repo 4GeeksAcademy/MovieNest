@@ -6,55 +6,71 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false); 
+  const [favorites, setFavorites] = useState([])
 
   const fallbackImage = "/api/placeholder/300/450";
 
   useEffect(() => {
-    if (isAuthenticated) {
-     
-      async function checkFavorite() {
+    const initialize = async()=>{
+      if (isAuthenticated) {
+      async function fetchFavorites() {
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/favorites`, {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
             },
           });
 
-          if (response.ok) {
-            const favorites = await response.json();
-            const isFav = favorites.some((favorite) => favorite.movie_id === id);
-            setIsFavorite(isFav);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+            return false
           }
+    
+          const data = await response.json();
+          setFavorites(data);
+          return true
         } catch (error) {
-          console.error("Error checking favorite:", error);
+          console.error("Error fetching favorites:", error);
+          return false
         }
       }
-      checkFavorite();
+      let result = await fetchFavorites();
+      if(result){
+        const isFav = favorites.some((favorite) => favorite.movie_id === id);
+        setIsFavorite(isFav);
+      }
+
     }
-  }, [isAuthenticated, id]);
+    }
+    initialize()
+  }, [isAuthenticated]);
 
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) return; 
 
     try {
       const response = isFavorite
-        ? await fetch(`${process.env.BACKEND_URL}/favorites/${id}`, {
+        ? await fetch(`${process.env.BACKEND_URL}/api/favorites/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
           })
-        : await fetch(`${process.env.BACKEND_URL}/favorites`, {
+        : await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             method: "POST",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ movie_id: id, movie_name: name }),
+            body: JSON.stringify({ 
+              movie_id: id.toString(), 
+              movie_name: name 
+            }),
           });
 
       if (response.ok) {
-        setIsFavorite(!isFavorite);
+        setIsFavorite(true);
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -85,7 +101,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           </button>
           <button
             className={`favorite-btn ${isFavorite ? "filled" : ""}`}
-            onClick={handleFavoriteToggle}
+            onClick= {()=> handleFavoriteToggle ()}
           >
             {isFavorite ? "★" : "☆"}
           </button>

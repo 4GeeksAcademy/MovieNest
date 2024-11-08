@@ -13,7 +13,7 @@ const Favorites = () => {
     if (isAuthenticated) {
       async function fetchFavorites() {
         try {
-          const response = await fetch(`${process.env.BACKEND_URL}/favorites`, {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
               "Content-Type": "application/json",
