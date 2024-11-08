@@ -7,7 +7,7 @@ import MovieDetail from "./MovieDetail"
 
 import Login from "./Login";
 import Logout from "./Logout";
-import Favorites from "./Favorite ";
+import Favorites from "./Favorite";
 
 const Layout = () => {
   const basename = process.env.BASENAME || "";

@@ -4,7 +4,7 @@ import Carousel from "./Carousel";
 import { useAuth } from "./AuthContext";
 import Navbar from "./Navbar";
 import { useNavigate, Link } from "react-router-dom"; // Import both useNavigate and Link
-import Favorites from "./Favorite ";
+import Favorites from "./Favorite";
 
 export default function Home() {
   const navigate = useNavigate(); 

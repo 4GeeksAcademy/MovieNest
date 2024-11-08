@@ -107,25 +107,50 @@ def add_favorite():
 
     return jsonify(new_favorite.serialize()), 201
 
+# @api.route('/favorites/<int:movie_id>', methods=['DELETE'])
+# @jwt_required()
+# def delete_favorite(movie_id):
+#     user_id = get_jwt_identity() 
+
+#     # user = User.query.filter_by(id=user_id,).first()
+#     # if not user:
+#     #     return jsonify({"message": "User not found"}), 404
+
+#     print("############ movie_id",movie_id)
+#     favorites= Favorite.query.filter_by(user_id=user.id, movie_id=movie_id).first()
+#     print("####################### favorites list",favorites)
+#     # for favorite in favorites:
+#     #     if favorite.movie_id == movie_id:
+#     #         db.session.delete(favorite)
+#     #         db.session.commit()
+#     #         return jsonify({"message": "Favorite deleted"}), 200
+    
+#     # return jsonify({"message": "Favorite not found"}), 404
+#     if not favorite:
+#         return jsonify({"message": "Favorite not found"}), 404
+
+#     db.session.delete(favorite)
+#     db.session.commit()
+#     return jsonify({"message": "Favorite deleted", "deleted_favorite": favorite.serialize()}), 200
+
 @api.route('/favorites/<int:movie_id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite(movie_id):
-    user_id = get_jwt_identity() 
+    user_id = get_jwt_identity()  # Get user ID from JWT token
 
-    user = User.query.filter_by(id=user_id).first()
-    if not user:
-        return jsonify({"message": "User not found"}), 404
-
-    print("############ movie_id",movie_id)
-    favorites= Favorite.query.filter_by(user_id=user.id)
-    print("####################### favorites list",favorites)
-    for favorite in favorites:
-        if favorite.movie_id == movie_id:
-            db.session.delete(favorite)
-            db.session.commit()
-            return jsonify({"message": "Favorite deleted"}), 200
+    # Find the favorite by both user_id and movie_id
+    favorite = Favorite.query.filter_by(user_id=user_id, movie_id=str(movie_id)).first()
     
-    return jsonify({"message": "Favorite not found"}), 404
+    if not favorite:
+        # If the favorite isn't found, return a 404 response
+        return jsonify({"message": "Favorite not found"}), 404
+
+    # If found, delete it
+    db.session.delete(favorite)
+    db.session.commit()
+
+    # Return success message with the serialized favorite
+    return jsonify({"message": "Favorite deleted successfully"}), 200
 
 # @api.route('/favorites', methods=['GET'])
 # @jwt_required()

@@ -10,10 +10,45 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
 
   const fallbackImage = "/api/placeholder/300/450";
 
+  // useEffect(() => {
+  //   const initialize = async()=>{
+  //     if (isAuthenticated) {
+  //     async function fetchFavorites() {
+  //       try {
+  //         const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //             "Content-Type": "application/json",
+  //           },
+  //         });
+
+  //         if (!response.ok) {
+  //           throw new Error(`HTTP error! status: ${response.status}`);
+  //           return false
+  //         }
+    
+  //         const data = await response.json();
+  //         setFavorites(data);
+  //         return true
+  //       } catch (error) {
+  //         console.error("Error fetching favorites:", error);
+  //         return false
+  //       }
+  //     }
+  //     let result = await fetchFavorites();
+  //     if(result){
+  //       const isFav = favorites.some((favorite) => favorite.movie_id === id);
+  //       setIsFavorite(isFav);
+  //     }
+
+  //   }
+  //   }
+  //   initialize()
+  // }, [isAuthenticated]);
+
   useEffect(() => {
-    const initialize = async()=>{
+    const checkFavoriteStatus = async () => {
       if (isAuthenticated) {
-      async function fetchFavorites() {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
@@ -24,27 +59,20 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
 
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
-            return false
           }
     
-          const data = await response.json();
-          setFavorites(data);
-          return true
+          const favorites = await response.json();
+          // Check if current movie is in favorites
+          const isFav = favorites.some(favorite => favorite.movie_id === id.toString());
+          setIsFavorite(isFav);
         } catch (error) {
           console.error("Error fetching favorites:", error);
-          return false
         }
       }
-      let result = await fetchFavorites();
-      if(result){
-        const isFav = favorites.some((favorite) => favorite.movie_id === id);
-        setIsFavorite(isFav);
-      }
+    };
 
-    }
-    }
-    initialize()
-  }, [isAuthenticated]);
+    checkFavoriteStatus();
+  }, [isAuthenticated, id]);
 
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) return; 
@@ -70,7 +98,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           });
 
       if (response.ok) {
-        setIsFavorite(true);
+        setIsFavorite(!isFavorite);
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
