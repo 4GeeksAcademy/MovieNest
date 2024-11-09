@@ -1,54 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext"; 
+import { useAuth } from "./AuthContext";
 
-function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
+function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const [isFavorite, setIsFavorite] = useState(false); 
+  const [isFavorite, setIsFavorite] = useState(false);
   const [favorites, setFavorites] = useState([])
 
-  const fallbackImage = "/api/placeholder/300/450";
+  const fallbackImage = "https://placehold.co/300x450";
 
-  // useEffect(() => {
-  //   const initialize = async()=>{
-  //     if (isAuthenticated) {
-  //     async function fetchFavorites() {
-  //       try {
-  //         const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
-  //           headers: {
-  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-  //             "Content-Type": "application/json",
-  //           },
-  //         });
-
-  //         if (!response.ok) {
-  //           throw new Error(`HTTP error! status: ${response.status}`);
-  //           return false
-  //         }
-    
-  //         const data = await response.json();
-  //         setFavorites(data);
-  //         return true
-  //       } catch (error) {
-  //         console.error("Error fetching favorites:", error);
-  //         return false
-  //       }
-  //     }
-  //     let result = await fetchFavorites();
-  //     if(result){
-  //       const isFav = favorites.some((favorite) => favorite.movie_id === id);
-  //       setIsFavorite(isFav);
-  //     }
-
-  //   }
-  //   }
-  //   initialize()
-  // }, [isAuthenticated]);
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      if (isAuthenticated) {
+      if (isAuthenticated, id) {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
@@ -60,7 +25,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-    
+
           const favorites = await response.json();
           // Check if current movie is in favorites
           const isFav = favorites.some(favorite => favorite.movie_id === id.toString());
@@ -72,30 +37,30 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
     };
 
     checkFavoriteStatus();
-  }, [isAuthenticated, id]);
+  }, []);
 
   const handleFavoriteToggle = async () => {
-    if (!isAuthenticated) return; 
+    if (!isAuthenticated) return;
 
     try {
       const response = isFavorite
         ? await fetch(`${process.env.BACKEND_URL}/api/favorites/${id}`, {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-            },
-          })
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        })
         : await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ 
-              movie_id: id.toString(), 
-              movie_name: name 
-            }),
-          });
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            movie_id: id.toString(),
+            movie_name: name
+          }),
+        });
 
       if (response.ok) {
         setIsFavorite(!isFavorite);
@@ -106,7 +71,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
   };
 
   return (
-    <div className="movie-card">
+    <div className="movie-card" ref={Ref}>
       <div className="movie-poster">
         <img
           src={`https://image.tmdb.org/t/p/w500${poster}` || fallbackImage}
@@ -129,7 +94,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           </button>
           <button
             className={`favorite-btn ${isFavorite ? "filled" : ""}`}
-            onClick= {()=> handleFavoriteToggle ()}
+            onClick={() => handleFavoriteToggle()}
           >
             {isFavorite ? "★" : "☆"}
           </button>

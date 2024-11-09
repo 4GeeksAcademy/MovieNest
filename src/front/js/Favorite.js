@@ -61,7 +61,7 @@ const Favorites = () => {
             id={movie.movie_id}
             name={movie.movie_name}
             overview={""} 
-            poster={movie.poster} 
+            poster={movie.poster_path} 
           />
         ))}
       </div>
