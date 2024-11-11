@@ -22,11 +22,11 @@ export default function Home() {
         <section className="carousel">
           <Carousel />
         </section>
-        {isAuthenticated && (
+        {/* {isAuthenticated && (
           <section className="favorites">
             <Favorites />
           </section>
-        )}
+        )} */}
       </main>
       <footer>
         <p>&copy; 2024 MovieNest. All rights reserved.</p>

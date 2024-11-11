@@ -257,3 +257,64 @@ footer {
 .favorite-btn.filled {
   color: #ffcc00; /* Color dorado para estrella llena */
 }
+
+
+
+/* Pagination Styles */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 2rem 0;
+}
+
+.pagination-controls button {
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #f8fafc;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 40px;
+  text-align: center;
+}
+
+.pagination-controls button:hover:not(:disabled) {
+  background-color: #e11d48;
+  transform: translateY(-2px);
+}
+
+.pagination-controls button.active {
+  background-color: #e11d48;
+}
+
+.pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: rgba(30, 41, 59, 0.3);
+}
+
+.pagination-controls span {
+  color: #94a3b8;
+  padding: 0 0.5rem;
+}
+
+/* Previous and Next buttons specific styles */
+.pagination-controls button[disabled] {
+  background-color: rgba(30, 41, 59, 0.3);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.pagination-controls button:first-child,
+.pagination-controls button:last-child {
+  background-color: #e11d48;
+  padding: 0.5rem 1rem;
+}
+
+.pagination-controls button:first-child:hover:not(:disabled),
+.pagination-controls button:last-child:hover:not(:disabled) {
+  background-color: #be123c;
+}

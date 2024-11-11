@@ -1,13 +1,16 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/home.css";
 import MovieCard from "./MovieCard";
 
-
 const Carousel = () => {
   const [movies, setMovies] = useState([]);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const moviesPerPage = 12;
 
-  async function fetchMovies() {
+  async function fetchMovies(page) {
+    setIsLoading(true);
     try {
       const response = await fetch(
         `https://api.themoviedb.org/3/discover/movie?page=${page}`,
@@ -24,60 +27,161 @@ const Carousel = () => {
       }
 
       const data = await response.json();
-      setMovies((MovieList) => [...MovieList,...data.results]);
+      setMovies(data.results);
+      setTotalPages(Math.min(data.total_pages, 500)); // TMDB API limits to 500 pages
     } catch (error) {
       console.error("Error fetching movies:", error);
+    } finally {
+      setIsLoading(false);
     }
   }
+
   useEffect(() => {
-    
+    fetchMovies(currentPage);
+  }, [currentPage]);
 
-    fetchMovies();
-  }, [page]);
-const lastMovieOnPageRef = useRef()
-                                    // this code works!!! the api is fetching just need to figure out how to get it to display properly. also limit the requests.
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       const lastEntry = entries[0];
-  //       if (lastEntry.isIntersecting) {;
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     },
-  //     { rootMargin: '10px' }
-  //   );
-
-  //   // Cleanup function to unobserve the current last movie card
-  //   const currentElement = lastMovieOnPageRef.current;
-  //   if (currentElement) {
-  //     observer.observe(currentElement);
-  //   }
-
-  //   return () => {
-  //     if (currentElement) {
-  //       observer.unobserve(currentElement);
-  //     }
-  //   };
-  // }, [movies]);
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <section className="carousel">
       <h2 className="text-3xl font-bold mb-6">Trending Now</h2>
-      <div className="carousel-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {movies.slice(0, 10).map((movie) => (
-          <div className="d-block" key={movie.id}>
-            <MovieCard
-              id={movie.id}
-              Ref={lastMovieOnPageRef}
-              name={movie.original_title}
-              overview={movie.overview}
-              poster={movie.poster_path}
-              voteAverage={movie.vote_average}
-              releaseDate={movie.release_date}
-            />
+
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <div className="text-xl">Loading...</div>
+        </div>
+      ) : (
+        <>
+          <div className="carousel-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {movies.slice(0, moviesPerPage).map((movie) => (
+              <div className="d-block" key={movie.id}>
+                <MovieCard
+                  id={movie.id}
+                  name={movie.original_title}
+                  overview={movie.overview}
+                  poster={movie.poster_path}
+                  voteAverage={movie.vote_average}
+                  releaseDate={movie.release_date}
+                />
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+
+          {/* <div className="pagination-controls flex justify-center items-center gap-4 mt-8 mb-8">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+
+            <div className="flex items-center gap-2">
+              {currentPage > 1 && (
+                <button
+                  onClick={() => handlePageChange(1)}
+                  className="px-3 py-1 rounded hover:bg-gray-200"
+                >
+                  1
+                </button>
+              )}
+
+              {currentPage > 3 && <span>...</span>}
+
+              {currentPage > 2 && (
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  className="px-3 py-1 rounded hover:bg-gray-200"
+                >
+                  {currentPage - 1}
+                </button>
+              )}
+
+              <button className="px-3 py-1 bg-blue-500 text-white rounded">
+                {currentPage}
+              </button>
+
+              {currentPage < totalPages - 1 && (
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  className="px-3 py-1 rounded hover:bg-gray-200"
+                >
+                  {currentPage + 1}
+                </button>
+              )}
+
+              {currentPage < totalPages - 2 && <span>...</span>}
+
+              {currentPage < totalPages && (
+                <button
+                  onClick={() => handlePageChange(totalPages)}
+                  className="px-3 py-1 rounded hover:bg-gray-200"
+                >
+                  {totalPages}
+                </button>
+              )}
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+          </div> */}
+          <div className="pagination-controls">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+
+            {currentPage > 1 && (
+              <button onClick={() => handlePageChange(1)}>1</button>
+            )}
+
+            {currentPage > 3 && <span>...</span>}
+
+            {currentPage > 2 && (
+              <button onClick={() => handlePageChange(currentPage - 1)}>
+                {currentPage - 1}
+              </button>
+            )}
+
+            <button className="active">
+              {currentPage}
+            </button>
+
+            {currentPage < totalPages - 1 && (
+              <button onClick={() => handlePageChange(currentPage + 1)}>
+                {currentPage + 1}
+              </button>
+            )}
+
+            {currentPage < totalPages - 2 && <span>...</span>}
+
+            {currentPage < totalPages && (
+              <button onClick={() => handlePageChange(totalPages)}>
+                {totalPages}
+              </button>
+            )}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+          </div>
+        </>
+      )}
     </section>
   );
 };
