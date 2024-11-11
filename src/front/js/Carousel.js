@@ -72,69 +72,6 @@ const Carousel = () => {
             ))}
           </div>
 
-          {/* <div className="pagination-controls flex justify-center items-center gap-4 mt-8 mb-8">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Previous
-            </button>
-
-            <div className="flex items-center gap-2">
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handlePageChange(1)}
-                  className="px-3 py-1 rounded hover:bg-gray-200"
-                >
-                  1
-                </button>
-              )}
-
-              {currentPage > 3 && <span>...</span>}
-
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="px-3 py-1 rounded hover:bg-gray-200"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-
-              <button className="px-3 py-1 bg-blue-500 text-white rounded">
-                {currentPage}
-              </button>
-
-              {currentPage < totalPages - 1 && (
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="px-3 py-1 rounded hover:bg-gray-200"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-
-              {currentPage < totalPages - 2 && <span>...</span>}
-
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handlePageChange(totalPages)}
-                  className="px-3 py-1 rounded hover:bg-gray-200"
-                >
-                  {totalPages}
-                </button>
-              )}
-            </div>
-
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 disabled:cursor-not-allowed"
-            >
-              Next
-            </button>
-          </div> */}
           <div className="pagination-controls">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -182,6 +119,11 @@ const Carousel = () => {
           </div>
         </>
       )}
+
+      <a className="btn btn-dark" href="https://buymeacoffee.com/movienest" target="_blank">
+        <img alt="Buy me a coffee" src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" />
+        <span className="ms-2">Buy me a coffee</span>
+      </a>
     </section>
   );
 };

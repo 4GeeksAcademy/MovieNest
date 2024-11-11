@@ -35,30 +35,6 @@ const Carousel = () => {
     fetchMovies();
   }, [page]);
 const lastMovieOnPageRef = useRef()
-                                    // this code works!!! the api is fetching just need to figure out how to get it to display properly. also limit the requests.
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     (entries) => {
-  //       const lastEntry = entries[0];
-  //       if (lastEntry.isIntersecting) {;
-  //         setPage((prevPage) => prevPage + 1);
-  //       }
-  //     },
-  //     { rootMargin: '10px' }
-  //   );
-
-  //   // Cleanup function to unobserve the current last movie card
-  //   const currentElement = lastMovieOnPageRef.current;
-  //   if (currentElement) {
-  //     observer.observe(currentElement);
-  //   }
-
-  //   return () => {
-  //     if (currentElement) {
-  //       observer.unobserve(currentElement);
-  //     }
-  //   };
-  // }, [movies]);
 
   return (
     <section className="carousel">

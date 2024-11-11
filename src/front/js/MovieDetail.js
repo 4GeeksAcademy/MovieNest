@@ -50,7 +50,7 @@ const MovieDetail = () => {
         }
 
         const data = await response.json();
-        setCast(data.cast.slice(0, 10)); // Limitar a los primeros 10 actores
+        setCast(data.cast.slice(0, 10)); 
       } catch (error) {
         console.error("Error fetching movie cast:", error);
       }
