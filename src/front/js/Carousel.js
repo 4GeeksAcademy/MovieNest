@@ -121,8 +121,8 @@ const Carousel = () => {
       )}
 
       <a className="btn btn-dark" href="https://buymeacoffee.com/movienest" target="_blank">
-        <img alt="Buy me a coffee" src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" />
-        <span className="ms-2">Buy me a coffee</span>
+        {/* <img alt="Buy me a coffee" src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" /> */}
+        <span className="ms-2">Donate a boba🧋❤️ </span>
       </a>
     </section>
   );
