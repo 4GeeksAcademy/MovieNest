@@ -18,17 +18,14 @@ const Navbar = () => {
   async function fetchMovies(searchQuery = '') {
     const movies = [];
     try {
-      // If there's a search query, use search endpoint, otherwise use discover
-      const endpoint = searchQuery
-        ? 'search/movie'
-        : 'discover/movie';
-let pageLimit = 10
-      // Fetch first 5 pages (100 movies)
+      const endpoint = searchQuery ? 'search/movie' : 'discover/movie';
+      let pageLimit = 10;
+
       for (let page = 1; page <= pageLimit; page++) {
         const url = new URL(`https://api.themoviedb.org/3/${endpoint}`);
         url.search = new URLSearchParams({
           page: page.toString(),
-          ...(searchQuery && { query: searchQuery })
+          ...(endpoint === 'search/movie' && searchQuery && { query: searchQuery })
         }).toString();
 
         const response = await fetch(url, {
@@ -43,7 +40,9 @@ let pageLimit = 10
         }
 
         const data = await response.json();
-        pageLimit = data.total_pages
+        if (data.total_pages) {
+          pageLimit = Math.min(data.total_pages, 10);
+        }
         movies.push(...data.results);
       }
 

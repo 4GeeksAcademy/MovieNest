@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
+import Navbar from "./Navbar";
 
 const RegisterUser = () => {
   const [inputValues, setInputValues] = useState({ email: "", password: "" });
@@ -72,71 +73,74 @@ const RegisterUser = () => {
   };
 
   return (
-    <div className="container">
-      <div className="row justify-content-center mt-5">
-        <div className="col-12 col-md-6 col-lg-4">
-          <div className="card shadow">
-            <div className="card-body">
-              <h2 className="card-title text-center mb-4 text-dark">Sign Up</h2>
+    <div>
+      <Navbar />
+      <div className="container">
 
-              <form onSubmit={handleRegister}>
-                <div className="mb-3">
-                  <input
-                    type="email"
-                    name="email"
-                    className="form-control"
-                    placeholder="Email"
-                    value={inputValues.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
+        <div className="row justify-content-center mt-5">
+          <div className="col-12 col-md-6 col-lg-4">
+            <div className="card shadow">
+              <div className="card-body">
+                <h2 className="card-title text-center mb-4 text-dark">Sign Up</h2>
 
-                <div className="mb-3">
-                  <input
-                    type="password"
-                    name="password"
-                    className="form-control"
-                    placeholder="Contraseña"
-                    value={inputValues.password}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                {error && (
-                  <div className="alert alert-danger" role="alert">
-                    {error}
+                <form onSubmit={handleRegister}>
+                  <div className="mb-3">
+                    <input
+                      type="email"
+                      name="email"
+                      className="form-control"
+                      placeholder="Email"
+                      value={inputValues.email}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </div>
-                )}
 
-                {token && (
-                  <div className="alert alert-success" role="alert">
-                    Success! Token: {token.slice(0, 20)}...
+                  <div className="mb-3">
+                    <input
+                      type="password"
+                      name="password"
+                      className="form-control"
+                      placeholder="Contraseña"
+                      value={inputValues.password}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </div>
-                )}
 
-                <button
-                  type="submit"
-                  className={`btn btn-primary w-100 ${
-                    isLoading ? "disabled" : ""
-                  }`}
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Signing up...
-                    </>
-                  ) : (
-                    "Sign Up"
+                  {error && (
+                    <div className="alert alert-danger" role="alert">
+                      {error}
+                    </div>
                   )}
-                </button>
-              </form>
+
+                  {token && (
+                    <div className="alert alert-success" role="alert">
+                      Success! Token: {token.slice(0, 20)}...
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    className={`btn btn-primary w-100 ${isLoading ? "disabled" : ""
+                      }`}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                          aria-hidden="true"
+                        ></span>
+                        Signing up...
+                      </>
+                    ) : (
+                      "Sign Up"
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
