@@ -27,6 +27,7 @@ const Carousel = () => {
       }
 
       const data = await response.json();
+      console.log("results from Carousel.js", data.results);
       setMovies(data.results);
       setTotalPages(Math.min(data.total_pages, 500)); // TMDB API limits to 500 pages
     } catch (error) {

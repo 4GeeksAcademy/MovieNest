@@ -9,47 +9,70 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
 
-  const filteredMovies = movies.filter(movie =>
-    movie.original_title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
   const handleLogout = () => {
     logout();
     alert("You have logged out.");
     navigate("/");
   };
 
-  async function fetchMovies() {
-
+  async function fetchMovies(searchQuery = '') {
+    const movies = [];
     try {
-      const response = await fetch(
-        `https://api.themoviedb.org/3/discover/movie`,
-        {
+      // If there's a search query, use search endpoint, otherwise use discover
+      const endpoint = searchQuery
+        ? 'search/movie'
+        : 'discover/movie';
+let pageLimit = 10
+      // Fetch first 5 pages (100 movies)
+      for (let page = 1; page <= pageLimit; page++) {
+        const url = new URL(`https://api.themoviedb.org/3/${endpoint}`);
+        url.search = new URLSearchParams({
+          page: page.toString(),
+          ...(searchQuery && { query: searchQuery })
+        }).toString();
+
+        const response = await fetch(url, {
           headers: {
             Authorization: `Bearer ${process.env.REACT_APP_TMDB_ACCESS_TOKEN}`,
             "Content-Type": "application/json",
           },
-        }
-      );
+        });
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        pageLimit = data.total_pages
+        movies.push(...data.results);
       }
 
-      const data = await response.json();
-      setMovies(data.results);
+      setMovies(movies);
     } catch (error) {
       console.error("Error fetching movies:", error);
-    } finally {
-      setIsLoading(false);
     }
   }
 
+  // Debounce search to prevent too many API calls
   useEffect(() => {
-    fetchMovies();
-  }, []);
+    const debounceTimer = setTimeout(() => {
+      if (searchTerm) {
+        fetchMovies(searchTerm);
+      } else {
+        fetchMovies();
+      }
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [searchTerm]);
+
+  // Filter movies client-side for immediate feedback
+  const filteredMovies = movies.filter(movie =>
+    movie.original_title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
-    <header className="navbar">
+    <header className="navbar sticky-nav">
       <div className="logo">
         <h2>
           <Link to="/">MovieNest</Link>

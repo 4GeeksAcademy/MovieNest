@@ -36,3 +36,10 @@
   text-decoration: none;
   color: inherit;
 }
+
+.sticky-nav {
+  position: sticky;
+  /* top: 0;
+  z-index: 100;
+  padding: 1rem;    Untag this if the navbar started acting up ya feel😤 */
+}
