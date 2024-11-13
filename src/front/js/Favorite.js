@@ -4,13 +4,13 @@ import "../styles/home.css";
 import Navbar from "./Navbar";
 import { useAuth } from "./AuthContext";
 import { Link } from "react-router-dom";
+import FavoriteMovieCard from "./FavoriteMovieCard";
 
 const Favorites = () => {
   const { isAuthenticated } = useAuth();
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-
     if (isAuthenticated) {
       async function fetchFavorites() {
         console.log("Fetching favorites...");
@@ -62,15 +62,13 @@ const Favorites = () => {
         <h2 className="text-3xl font-bold mb-6">Your Favorites</h2>
         <div className="favorites-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {favorites.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              id={movie.id}
-              name={movie.movie_name}
-              overview={""}
-              poster={movie.poster_path}
-
+            <FavoriteMovieCard
+              key={movie.movie_id}
+              movie_id={movie.movie_id}
+              movie_name={movie.movie_name}
             />
           ))}
+
         </div>
       </section>
     </div>
