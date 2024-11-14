@@ -92,11 +92,11 @@ const Navbar = () => {
             />
 
             {searchTerm && (
-              <ul className="dropdown-menu show">
+              <ul className="dropdown-menu show" style={{maxHeight:"400px", overflowY: "auto", width: "100%", maxWidth: "500px"}}>
                 {filteredMovies.length > 0 ? (
                   filteredMovies.map((movie) => (
                     <li key={movie.id}>
-                      <a className="dropdown-item" onClick={() => navigate(`/movie/${movie.id}`)}>{movie.original_title}</a>
+                      <a className="dropdown-item text-truncate"  onClick={() => navigate(`/movie/${movie.id}`)}>{movie.original_title}</a>
                     </li>
                   ))
                 ) : (
