@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
-import Navbar from "./Navbar";
+import { useAuth } from "../AuthContext";
+import Navbar from "../Navbar";
 
 const RegisterUser = () => {
   const [inputValues, setInputValues] = useState({ email: "", password: "" });
@@ -45,23 +45,26 @@ const RegisterUser = () => {
       });
 
       const data = await response.json();
-
-      if (response.ok) {
+      if (!response.ok) {
+        // Log any error response for more clarity
+        console.error("Signup failed:", data);
+        setError(data.message || "Signup error");
+      } else {
         setToken(data.token);
         localStorage.setItem("token", data.token);
-
         login(data.token, { username: data.username });
-
+        setError("Please check your email to activate your account!");
         navigate("/");
-      } else {
-        setError(data.message || "Register Error");
       }
     } catch (error) {
-      setError("Error with server");
+      console.error("Error with signup:", error);
+      setError("Server error. Please try again later.");
     } finally {
       setIsLoading(false);
     }
   };
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

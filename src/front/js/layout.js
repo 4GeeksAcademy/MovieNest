@@ -2,11 +2,11 @@ import React from "react";
 import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Private from "./Private";
-import RegisterUser from "./Signup";
+import RegisterUser from "./auth/Signup";
 import MovieDetail from "./MovieDetail"
 
-import Login from "./Login";
-import Logout from "./Logout";
+import Login from "./auth/Login";
+import Logout from "./auth/Logout";
 import Favorites from "./Favorite";
 
 const Layout = () => {
