@@ -2,25 +2,57 @@ import React, { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import '../../styles/login.css';
 
-
-
-export default function Login() {
+function Login() {
   const [inputValues, setInputValues] = useState({ email: "", password: "" });
   const [errorMessage, setErrorMessage] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const regex = /\S+@\S+\.\S+/;
+    return regex.test(email);
+  };
+
+  const validatePassword = (password) => {
+    return password.length >= 6;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInputValues(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const onLogin = async () => {
     setErrorMessage("");
+    setEmailError("");
+    setPasswordError("");
 
     if (!inputValues.email || !inputValues.password) {
-      setErrorMessage("Please, fill");
+      setErrorMessage("Please fill all fields");
+      return;
+    }
+
+    if (!validateEmail(inputValues.email)) {
+      setEmailError("Please enter a valid email");
+      return;
+    }
+
+    if (!validatePassword(inputValues.password)) {
+      setPasswordError("Password must be at least 6 characters");
       return;
     }
 
     try {
-      const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+      const rawResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -29,11 +61,11 @@ export default function Login() {
       });
 
       if (!rawResponse.ok) {
-        throw new Error("Try Again");
+        const errorData = await rawResponse.json();
+        throw new Error(errorData.message || "Login Failed");
       }
 
       const translatedResponse = await rawResponse.json();
-
       const token = translatedResponse.access_token;
       const username = translatedResponse.username;
 
@@ -41,66 +73,69 @@ export default function Login() {
         login(token, { username });
         navigate("/");
       } else {
-        setErrorMessage("Login Failed.");
+        setErrorMessage("Login Failed");
       }
     } catch (error) {
       console.error(error);
-      setErrorMessage("Try Again");
+      setErrorMessage(error.message || "An error occurred during login");
     }
   };
 
   return (
     <div>
       <Navbar />
-      <div className="container d-flex align-items-center justify-content-center min-vh-100">
-        <div className="card p-5 shadow" style={{ maxWidth: "400px", width: "100%" }}>
-          <h1 className="text-center mb-4 text-dark">Login</h1>
+      <div className="login-container">
+        <div className="login-card">
+          <h1 className="login-title">Welcome Back</h1>
+
           {errorMessage && (
-            <div className="alert alert-danger text-center" role="alert">
+            <div className="error-message" role="alert">
               {errorMessage}
             </div>
           )}
 
-          <div className="mb-3">
+          <div className="form-group">
             <input
               type="email"
-              onChange={(event) => {
-                const { value } = event.target;
-                setInputValues((prevState) => ({
-                  ...prevState,
-                  email: value,
-                }));
-              }}
+              name="email"
+              className={`login-input ${emailError ? 'is-invalid' : ''}`}
               value={inputValues.email}
-              placeholder="E-mail"
-              className="form-control"
-              aria-label="Email Address"
-              required
+              placeholder="Email address"
+              onChange={handleInputChange}
             />
+            {emailError && <div className="field-error">{emailError}</div>}
           </div>
-          <div className="mb-3">
+
+          <div className="password-container">
             <input
-              type="password"
-              onChange={(event) => {
-                const { value } = event.target;
-                setInputValues((prevState) => ({
-                  ...prevState,
-                  password: value,
-                }));
-              }}
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              className={`login-input ${passwordError ? 'is-invalid' : ''}`}
               value={inputValues.password}
               placeholder="Password"
-              className="form-control"
-              aria-label="Password"
-              required
+              onChange={handleInputChange}
             />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </button>
+            {passwordError && <div className="field-error">{passwordError}</div>}
           </div>
-          <button onClick={onLogin} className="btn btn-danger w-100">
-            Click to Login!
-          </button>\
 
+          <div className="forgot-password">
+            <a href="/forgot-password">Forgot password?</a>
+          </div>
+
+          <button onClick={onLogin} className="login-button">
+            Sign In
+          </button>
         </div>
       </div>
     </div>
   );
 }
+
+export default Login;

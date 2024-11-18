@@ -1,37 +1,149 @@
+/* Estilos generales de la página */
+body {
+  background: linear-gradient(to bottom, #1a1f2c, #121620);
+  min-height: 100vh;
+}
+
+/* Contenedor principal del login */
 .login-container {
+  min-height: calc(100vh - 64px); /* Ajusta esto según la altura de tu navbar */
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 300px;
-  margin: auto;
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  background-color: #f9f9f9;
 }
 
-h1 {
-  margin-bottom: 20px;
-  color: black;
-}
-
-.input-field {
+/* Tarjeta de login */
+.login-card {
   width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 
+/* Título */
+.login-title {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
 
+/* Campos de entrada */
+.login-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.login-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* Botón de mostrar/ocultar contraseña */
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: white;
+}
+
+/* Contenedor de la contraseña */
+.password-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Botón de login */
+.login-button {
+  width: 100%;
+  padding: 12px;
+  background: #dc3545;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
 .login-button:hover {
-  background-color: #0056b3;
+  background: #c82333;
+  transform: translateY(-1px);
 }
 
+.login-button:active {
+  transform: translateY(1px);
+}
+
+/* Mensajes de error */
 .error-message {
-  color: red;
-  margin-bottom: 10px;
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  color: #ff8d8d;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.field-error {
+  color: #ff8d8d;
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Link de olvidé contraseña */
+.forgot-password {
+  text-align: right;
+  margin-bottom: 1rem;
+}
+
+.forgot-password a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+  color: white;
+}
+
+/* Estilos para los campos inválidos */
+.login-input.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  color: #ff8d8d;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
 }
