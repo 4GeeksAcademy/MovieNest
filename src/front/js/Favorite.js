@@ -11,9 +11,8 @@ const Favorites = () => {
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      async function fetchFavorites() {
-        console.log("Fetching favorites...");
+    const fetchFavorites = async () => {
+      if (isAuthenticated) {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
@@ -27,15 +26,15 @@ const Favorites = () => {
           }
 
           const data = await response.json();
-          console.log("Data fetched:", data);
           setFavorites(data);
         } catch (error) {
           console.error("Error fetching favorites:", error);
         }
       }
-      fetchFavorites();
-    }
+    };
+    fetchFavorites();
   }, [isAuthenticated]);
+
 
 
   if (!isAuthenticated) {

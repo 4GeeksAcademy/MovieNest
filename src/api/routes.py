@@ -1,34 +1,19 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-from flask import  Flask, request, jsonify, Blueprint
+from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Favorite
-from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, get_jwt
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from api.blacklist import blacklist
 from flask_cors import CORS
-from flask_mail import Mail, Message
 
 # Crear la instancia de Flask primero
 app = Flask(__name__)
 
-# Configuraciones de la aplicación
-app.config['MAIL_SERVER'] = 'sandbox.smtp.mailtrap.io'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = "104167b08b9ab9"
-app.config['MAIL_PASSWORD'] = "06db9fec1158cf"
-app.config['MAIL_DEFAULT_SENDER'] = 'no-reply@yourdomain.com'
-
-app.config['BASE_URL'] = 'http://127.0.0.1:3001'
-
-# Inicializar Flask-Mail después de la configuración
-mail = Mail(app)
-
+# Inicializar la aplicación
 api = Blueprint('api', __name__)
 
+# Habilitar CORS
 CORS(api)
 
-# Authenthication endpoints
+# Endpoints de autenticación
 
 @api.route('/login', methods=['POST'])
 def login_user():
@@ -76,55 +61,14 @@ def create_user():
             db.session.rollback()
             return jsonify({"message": "Database error"}), 500
 
-        # Intentar enviar el correo de activación
-        try:
-            send_activation_email(new_user)
-        except Exception as email_error:
-            print(f"Error sending activation email: {email_error}")
-            return jsonify({"message": "Error sending activation email"}), 500
-
+        # Retornar mensaje de éxito
         return jsonify({
-            "message": "Success. Please check your email to activate your account."
+            "message": "User created successfully. You can now log in."
         }), 201
 
     except Exception as e:
         print(f"General registration error: {e}")  # Ver en los logs
         return jsonify({"message": "Error during registration"}), 500
-
-def send_activation_email(user):
-    token = generate_confirmation_token(user)
-    confirm_url = f"{current_app.config['BASE_URL']}/confirm/{token}"
-    subject = "Activate your account"
-    body = f"Click the link to activate your account: {confirm_url}"
-
-    msg = Message(subject=subject, recipients=[user.email])
-    msg.body = body
-    try:
-        mail.send(msg)  # Enviar correo
-    except Exception as e:
-        print(f"Error sending email: {e}")
-        return False
-    return True
-
-def generate_confirmation_token(user):
-    # Genera un token para el correo de activación
-    return create_access_token(identity=user.id, expires_delta=timedelta(hours=1))  # Válido por 1 hora
-
-@api.route('/confirm/<token>', methods=['GET'])
-def confirm_email(token):
-    try:
-        user_id = decode_token(token)
-        user = User.query.get(user_id)
-        if not user:
-            return jsonify({"message": "Invalid or expired token"}), 400
-        
-        user.is_active = True
-        db.session.commit()
-        return jsonify({"message": "Your account has been activated!"}), 200
-    except Exception as e:
-        print(f"Error in confirmation: {e}")
-        return jsonify({"message": "Invalid or expired token"}), 400
-
 
 @api.route('/logout', methods=['POST'])
 @jwt_required()
@@ -145,6 +89,7 @@ def get_private_data():
 
 # # Favorites endpoints
 
+
 @api.route('/favorites', methods=['POST'])
 @jwt_required()
 def add_favorite():
@@ -157,12 +102,12 @@ def add_favorite():
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    favorites= Favorite.query.filter_by(user_id=user.id)
+    favorites = Favorite.query.filter_by(user_id=user.id)
     for favorite in favorites:
         if favorite.movie_id == movie_id:
             return jsonify({"message": "Movie already in favorites"}), 400
 
-    new_favorite = Favorite(user_id=user.id, movie_id=movie_id, movie_name=movie_name) #add movie poster,synaps,rating are missing on fav page
+    new_favorite = Favorite(user_id=user.id, movie_id=movie_id, movie_name=movie_name)
     db.session.add(new_favorite)
     db.session.commit()
 
@@ -199,19 +144,3 @@ def favorites():
     favorites = Favorite.query.filter_by(user_id=user.id).all()
 
     return jsonify([favorite.serialize() for favorite in favorites]), 200
-
-@app.route('/api/send_email', methods=['POST'])
-def send_email():
-    # Crea el mensaje
-    msg = Message('Hola desde Flask', recipients=['tu_correo_destino@gmail.com'])
-    msg.body = "Hola, soy Flask"
-    
-    try:
-        # Envia el mensaje
-        mail.send(msg)
-        return jsonify({"message": "Correo enviado correctamente!"}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)

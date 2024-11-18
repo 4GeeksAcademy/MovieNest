@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
-import SendEmailButton from "./SendEmailButton";
+
 
 
 export default function Login() {
@@ -98,7 +98,7 @@ export default function Login() {
           <button onClick={onLogin} className="btn btn-danger w-100">
             Click to Login!
           </button>\
-          <SendEmailButton />
+
         </div>
       </div>
     </div>
