@@ -7,7 +7,7 @@ const Navbar = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth(); // Asegúrate de usar `username` del contexto
 
   const handleLogout = () => {
     logout();
@@ -52,7 +52,6 @@ const Navbar = () => {
     }
   }
 
-  // Debounce search to prevent too many API calls
   useEffect(() => {
     const debounceTimer = setTimeout(() => {
       if (searchTerm) {
@@ -65,7 +64,6 @@ const Navbar = () => {
     return () => clearTimeout(debounceTimer);
   }, [searchTerm]);
 
-  // Filter movies client-side for immediate feedback
   const filteredMovies = movies.filter(movie =>
     movie.original_title.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -92,11 +90,11 @@ const Navbar = () => {
             />
 
             {searchTerm && (
-              <ul className="dropdown-menu show" style={{maxHeight:"400px", overflowY: "auto", width: "100%", maxWidth: "500px"}}>
+              <ul className="dropdown-menu show" style={{ maxHeight: "400px", overflowY: "auto", width: "100%", maxWidth: "500px" }}>
                 {filteredMovies.length > 0 ? (
                   filteredMovies.map((movie) => (
                     <li key={movie.id}>
-                      <a className="dropdown-item text-truncate"  onClick={() => navigate(`/movie/${movie.id}`)}>{movie.original_title}</a>
+                      <a className="dropdown-item text-truncate" onClick={() => navigate(`/movie/${movie.id}`)}>{movie.original_title}</a>
                     </li>
                   ))
                 ) : (
@@ -104,7 +102,6 @@ const Navbar = () => {
                 )}
               </ul>
             )}
-
           </div>
           <li>
             <Link to="/">Home</Link>
@@ -123,11 +120,16 @@ const Navbar = () => {
             </>
           )}
           {isAuthenticated && (
-            <li>
-              <button className="logout-button" onClick={handleLogout}>
-                Logout
-              </button>
-            </li>
+            <>
+              <li>
+                <span>Welcome, <strong>{user?.username}</strong> </span> {/* Mostrar el username aquí */}
+              </li>
+              <li>
+                <button className="logout-button" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
+            </>
           )}
         </ul>
       </nav>

@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
+import { useAuth } from "../AuthContext";  // Asegúrate de que useAuth tenga una función 'login'
 import Navbar from "../Navbar";
 
 const RegisterUser = () => {
-  const [inputValues, setInputValues] = useState({ email: "", password: "" });
+  const [inputValues, setInputValues] = useState({ email: "", password: "", username: "" });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth();  // Hook de autenticación para hacer login después del registro
 
   const validateForm = () => {
-    if (!inputValues.email || !inputValues.password) {
+    if (!inputValues.email || !inputValues.password || !inputValues.username) {
       setError("Need to fill all the fields");
       return false;
     }
@@ -27,15 +27,19 @@ const RegisterUser = () => {
   };
 
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevenir el recargado del formulario
+    setError(null); // Limpiar el mensaje de error
+    setIsLoading(true); // Iniciar estado de carga
 
-    if (!validateForm()) return;
-
-    setIsLoading(true);
-    setError(null);
+    // Validar el formulario antes de continuar
+    if (!validateForm()) {
+      setIsLoading(false); // Detener el estado de carga si la validación falla
+      return;
+    }
 
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
+      // Hacer el request de registro
+      const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,19 +47,46 @@ const RegisterUser = () => {
         body: JSON.stringify(inputValues),
       });
 
-      const data = await response.json();
-      if (!response.ok) {
-        console.error("Signup failed:", data);
-        setError(data.message || "Signup error");
-      } else {
-        login(data.token, { username: data.username });
-        navigate("/"); // Redirigir a la página principal después del registro
+      if (!rawResponse.ok) {
+        const errorResponse = await rawResponse.json();
+        console.log("Error from backend:", errorResponse); // Imprimir respuesta de error
+        throw new Error(errorResponse.message || "Signup failed");
       }
+
+      const response = await rawResponse.json();
+      console.log("Signup success:", response); // Imprimir la respuesta exitosa
+
+      // Loguear automáticamente al usuario después de registrar
+      const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: inputValues.email,
+          password: inputValues.password,
+        }),
+      });
+
+      if (!loginResponse.ok) {
+        const loginError = await loginResponse.json();
+        throw new Error(loginError.message || "Login failed after signup");
+      }
+
+      const loginData = await loginResponse.json();
+      console.log("Login success:", loginData); // Imprimir respuesta de login
+
+      // Llamar al login (si tu sistema usa un hook/context para la autenticación)
+      login(loginData.token);  // Asumiendo que 'login' guarda el token en el contexto o localStorage
+
+      // Redirigir a la página principal o dashboard
+      navigate("/home");  // Cambia esta ruta por la que desees
+
     } catch (error) {
-      console.error("Error with signup:", error);
-      setError("Server error. Please try again later.");
+      console.error(error);
+      setError(error.message || "An error occurred. Please try again.");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Detener estado de carga
     }
   };
 
@@ -81,6 +112,18 @@ const RegisterUser = () => {
                 <form onSubmit={handleRegister}>
                   <div className="mb-3">
                     <input
+                      type="text"
+                      name="username"
+                      className="form-control"
+                      placeholder="Username"
+                      value={inputValues.username}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <input
                       type="email"
                       name="email"
                       className="form-control"
@@ -96,7 +139,7 @@ const RegisterUser = () => {
                       type="password"
                       name="password"
                       className="form-control"
-                      placeholder="Contraseña"
+                      placeholder="Password"
                       value={inputValues.password}
                       onChange={handleInputChange}
                       required

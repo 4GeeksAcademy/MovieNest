@@ -39,18 +39,23 @@ def create_user():
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
+        username = data.get('username')  # Obtener el username
 
-        # Validar los datos (como mínimo, asegurarse de que no estén vacíos)
-        if not email or not password:
-            return jsonify({"message": "Email and password are required"}), 400
+        # Validar los datos (asegurarse de que no estén vacíos)
+        if not email or not password or not username:
+            return jsonify({"message": "Email, password, and username are required"}), 400
 
-        # Verificar si el usuario ya existe
+        # Verificar si el usuario o el username ya existen
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             return jsonify({"message": "User already exists"}), 400
 
+        existing_username = User.query.filter_by(username=username).first()
+        if existing_username:
+            return jsonify({"message": "Username already taken"}), 400
+
         # Crear un nuevo usuario
-        new_user = User(email=email, password=password)
+        new_user = User(email=email, password=password, username=username)
 
         # Agregar el nuevo usuario a la base de datos
         try:
@@ -63,12 +68,14 @@ def create_user():
 
         # Retornar mensaje de éxito
         return jsonify({
-            "message": "User created successfully. You can now log in."
+            "message": "User created successfully. You can now log in.",
+            "username": new_user.username  # Incluir el username en la respuesta
         }), 201
 
     except Exception as e:
-        print(f"General registration error: {e}")  # Ver en los logs
+        print(f"General registration error: {e}")
         return jsonify({"message": "Error during registration"}), 500
+
 
 @api.route('/logout', methods=['POST'])
 @jwt_required()
