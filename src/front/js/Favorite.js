@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import MovieCard from "./MovieCard";
 import "../styles/home.css";
 import Navbar from "./Navbar";
 import { useAuth } from "./AuthContext";

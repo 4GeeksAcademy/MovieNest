@@ -321,3 +321,57 @@ footer {
   background-color: #be123c;
 }
 
+/* Estilo para el botón favorito con la animación de sacudida */
+.favorite-btn.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.favorite-btn {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.favorite-btn.shake {
+  animation: shake 0.5s ease;
+}
+
+.favorite-btn.favorited {
+  transform: scale(1.2); /* Efecto de expansión */
+  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7); /* Efecto de resplandor */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}
+
+.favorite-btn {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.favorite-btn.shake {
+  animation: shake 0.5s ease;
+}
+
+.favorite-btn.favorited {
+  transform: scale(1.2); /* Efecto de expansión */
+  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7); /* Efecto de resplandor */
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
+}

@@ -6,14 +6,14 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [favorites, setFavorites] = useState([])
+  const [shake, setShake] = useState(false);  // Para manejar la sacudida del botón
+  const [favorited, setFavorited] = useState(false); // Para manejar el efecto de agregado a favoritos
 
   const fallbackImage = "https://placehold.co/300x450";
 
-
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      if (isAuthenticated, id) {
+      if (isAuthenticated && id) {
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
@@ -37,10 +37,17 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
     };
 
     checkFavoriteStatus();
-  }, []);
+  }, [id, isAuthenticated]);
 
   const handleFavoriteToggle = async () => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      // Aplicamos la sacudida si no está autenticado
+      setShake(true);
+
+      // Restablecer la sacudida después de un corto tiempo
+      setTimeout(() => setShake(false), 500);
+      return;
+    }
 
     try {
       const response = isFavorite
@@ -58,12 +65,17 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
           },
           body: JSON.stringify({
             movie_id: id.toString(),
-            movie_name: name
+            movie_name: name,
           }),
         });
 
       if (response.ok) {
         setIsFavorite(!isFavorite);
+        setFavorited(true);
+
+        // Restablecer el estado de "favorito" después de un corto tiempo
+        setTimeout(() => setFavorited(false), 800); // Efecto de 800ms
+
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -93,8 +105,8 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
             Learn more
           </button>
           <button
-            className={`favorite-btn ${isFavorite ? "filled" : ""}`}
-            onClick={() => handleFavoriteToggle()}
+            className={`favorite-btn ${isFavorite ? "filled" : ""} ${shake ? "shake" : ""} ${favorited ? "favorited" : ""}`} // Efecto cuando se agrega a favoritos
+            onClick={handleFavoriteToggle}
           >
             {isFavorite ? "★" : "☆"}
           </button>
