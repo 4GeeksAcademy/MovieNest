@@ -10,6 +10,15 @@ const RegisterUser = () => {
   const navigate = useNavigate();
   const { login } = useAuth();  // Hook de autenticación para hacer login después del registro
 
+  useEffect(() => {
+    let isMounted = true; // Flag to track component mount status
+
+    return () => {
+      isMounted = false; // Set to false on unmount
+    };
+  }, []);
+
+
   const validateForm = () => {
     if (!inputValues.email || !inputValues.password || !inputValues.username) {
       setError("Need to fill all the fields");
@@ -26,19 +35,81 @@ const RegisterUser = () => {
     return true;
   };
 
-  const handleRegister = async (e) => {
-    e.preventDefault(); // Prevenir el recargado del formulario
-    setError(null); // Limpiar el mensaje de error
-    setIsLoading(true); // Iniciar estado de carga
+  // const handleRegister = async (e) => {
+  //   e.preventDefault(); // Prevenir el recargado del formulario
+  //   setError(null); // Limpiar el mensaje de error
+  //   setIsLoading(true); // Iniciar estado de carga
 
-    // Validar el formulario antes de continuar
+  //   // Validar el formulario antes de continuar
+  //   if (!validateForm()) {
+  //     setIsLoading(false); // Detener el estado de carga si la validación falla
+  //     return;
+  //   }
+
+  //   try {
+  //     // Hacer el request de registro
+  //     const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(inputValues),
+  //     });
+
+  //     if (!rawResponse.ok) {
+  //       const errorResponse = await rawResponse.json();
+  //       console.log("Error from backend:", errorResponse); // Imprimir respuesta de error
+  //       throw new Error(errorResponse.message || "Signup failed");
+  //     }
+
+  //     const response = await rawResponse.json();
+  //     console.log("Signup success:", response); // Imprimir la respuesta exitosa
+
+  //     // Loguear automáticamente al usuario después de registrar
+  //     const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         email: inputValues.email,
+  //         password: inputValues.password,
+  //       }),
+  //     });
+
+  //     if (!loginResponse.ok) {
+  //       const loginError = await loginResponse.json();
+  //       throw new Error(loginError.message || "Login failed after signup");
+  //     }
+
+  //     const loginData = await loginResponse.json();
+  //     console.log("Login success:", loginData); // Imprimir respuesta de login
+
+  //     // Llamar al login (si tu sistema usa un hook/context para la autenticación)
+  //     login(loginData.token);  // Asumiendo que 'login' guarda el token en el contexto o localStorage
+
+  //     // Redirigir a la página principal o dashboard
+  //     navigate("/home");  // Cambia esta ruta por la que desees
+
+  //   } catch (error) {
+  //     console.error(error);
+  //     setError(error.message || "An error occurred. Please try again.");
+  //   } finally {
+  //     setIsLoading(false); // Detener estado de carga
+  //   }
+  // };
+
+  const handleRegister = async (e) => {
+    e.preventDefault(); 
+    setError(null);
+    setIsLoading(true);
+
     if (!validateForm()) {
-      setIsLoading(false); // Detener el estado de carga si la validación falla
+      setIsLoading(false);
       return;
     }
 
     try {
-      // Hacer el request de registro
       const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
         method: "POST",
         headers: {
@@ -49,14 +120,12 @@ const RegisterUser = () => {
 
       if (!rawResponse.ok) {
         const errorResponse = await rawResponse.json();
-        console.log("Error from backend:", errorResponse); // Imprimir respuesta de error
         throw new Error(errorResponse.message || "Signup failed");
       }
 
       const response = await rawResponse.json();
-      console.log("Signup success:", response); // Imprimir la respuesta exitosa
+      console.log("Signup success:", response);
 
-      // Loguear automáticamente al usuario después de registrar
       const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
         method: "POST",
         headers: {
@@ -74,21 +143,25 @@ const RegisterUser = () => {
       }
 
       const loginData = await loginResponse.json();
-      console.log("Login success:", loginData); // Imprimir respuesta de login
+      console.log("Login success:", loginData);
 
-      // Llamar al login (si tu sistema usa un hook/context para la autenticación)
-      login(loginData.token);  // Asumiendo que 'login' guarda el token en el contexto o localStorage
+      login(loginData.token);
 
-      // Redirigir a la página principal o dashboard
-      navigate("/home");  // Cambia esta ruta por la que desees
-
+      if (isMounted) {
+        navigate("/home");
+      }
     } catch (error) {
       console.error(error);
-      setError(error.message || "An error occurred. Please try again.");
+      if (isMounted) {
+        setError(error.message || "An error occurred. Please try again.");
+      }
     } finally {
-      setIsLoading(false); // Detener estado de carga
+      if (isMounted) {
+        setIsLoading(false);
+      }
     }
   };
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;

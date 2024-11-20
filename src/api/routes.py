@@ -3,7 +3,7 @@ from api.models import db, User, Favorite
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
 from api.blacklist import blacklist
 from flask_cors import CORS
-
+from werkzeug.security import generate_password_hash , check_password_hash
 # Crear la instancia de Flask primero
 app = Flask(__name__)
 
@@ -21,16 +21,16 @@ def login_user():
     email = request_data.get("email")
     password = request_data.get("password")
 
-    user = User.query.filter_by(email=email).filter_by(password=password).first()
+    user = User.query.filter_by(email=email).first()
 
-    if user:
+    if user and check_password_hash(user.password, password):
         access_token = create_access_token(identity=user.id)
         return jsonify({
             "access_token": access_token,
             "username": user.username  
         }), 200
 
-    return jsonify({"message": "The user doesn't exist"}), 404
+    return jsonify({"message": "Invalid user or password"}), 404
 
 @api.route('/signup', methods=['POST'])
 def create_user():
@@ -55,7 +55,7 @@ def create_user():
             return jsonify({"message": "Username already taken"}), 400
 
         # Crear un nuevo usuario
-        new_user = User(email=email, password=password, username=username)
+        new_user = User(email=email, password=generate_password_hash(password), username=username)
 
         # Agregar el nuevo usuario a la base de datos
         try:
