@@ -9,6 +9,8 @@ const MovieDetail = () => {
   const [cast, setCast] = useState([]);
   const [trailerUrl, setTrailerUrl] = useState("");
   const [isFavorite, setIsFavorite] = useState(false);
+  const [shake, setShake] = useState(false);
+  const [favorited, setFavorited] = useState(false);
 
   useEffect(() => {
     const fetchMovieDetails = async () => {
@@ -85,40 +87,105 @@ const MovieDetail = () => {
       }
     };
 
+    const checkIfFavorite = async () => {
+      if (!localStorage.getItem("token")) return;
+
+      try {
+        const response = await fetch(
+          `${process.env.BACKEND_URL}/api/favorites/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setIsFavorite(true);
+        } else {
+          setIsFavorite(false);
+        }
+      } catch (error) {
+        console.error("Error checking if favorite:", error);
+      }
+    };
+
+
     fetchMovieDetails();
     fetchMovieCast();
     fetchMovieTrailer();
+    checkIfFavorite();
   }, [id]);
 
-  // Handle adding/removing from favorites
   const handleFavoriteToggle = async () => {
-    try {
-      const response = isFavorite
-        ? await fetch(`${process.env.BACKEND_URL}/api/favorites/${id}`, {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        })
-        : await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            movie_id: id.toString(),
-            movie_name: movie.title,
-          }),
-        });
+    if (!localStorage.getItem("token")) {
+      // Si no está autenticado, aplicamos el efecto de shake en el botón
+      setShake(true);
+      setTimeout(() => setShake(false), 500); // Reseteamos el estado de shake después de 0.5s
+      return;
+    }
 
-      if (response.ok) {
-        setIsFavorite(!isFavorite);
+    try {
+      // Verificar si la película está en favoritos
+      const responseGet = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (responseGet.ok) {
+        const favorites = await responseGet.json();
+        // Comprobar si la película está en favoritos
+        const isAlreadyFavorite = favorites.some(favorite => favorite.movie_id === id);
+
+        if (isAlreadyFavorite) {
+          // Si ya está en favoritos, eliminamos
+          const responseDelete = await fetch(`${process.env.BACKEND_URL}/api/favorites/${parseInt(id)}`, {  // Cambia a parseInt
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          });
+
+          if (responseDelete.ok) {
+            setIsFavorite(false);  // Actualizamos el estado de isFavorite a false
+            setFavorited(true);
+            setTimeout(() => setFavorited(false), 800); // Efecto visual de eliminado
+          } else {
+            console.log("Error al eliminar de favoritos");
+          }
+        } else {
+          // Si no está en favoritos, lo agregamos
+          const responsePost = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              movie_id: id.toString(),
+              movie_name: movie.title,
+            }),
+          });
+
+          if (responsePost.ok) {
+            setIsFavorite(true); // Actualizamos el estado de isFavorite a true
+            setFavorited(true);
+            setTimeout(() => setFavorited(false), 800); // Efecto visual de agregado
+          } else {
+            console.log("Error al agregar a favoritos");
+          }
+        }
+      } else {
+        console.log("Error al obtener los favoritos");
       }
     } catch (error) {
-      console.error("Error toggling favorite:", error);
+      console.error("Error al cambiar el estado de favorito:", error);
     }
   };
+
+
 
   if (!movie || cast.length === 0) {
     return <div>Loading...</div>;
@@ -127,7 +194,14 @@ const MovieDetail = () => {
   return (
     <>
       <Navbar />
-      <div className="movie-detail-container">
+      <div
+        className="movie-detail-container"
+        style={{
+          backgroundImage: `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          backgroundBlendMode: "overlay",
+        }}
+      >
         <div className="movie-detail-content">
           <div className="movie-detail-image">
             <img
@@ -136,14 +210,12 @@ const MovieDetail = () => {
             />
             {trailerUrl && (
               <a href={trailerUrl} target="_blank" rel="noopener noreferrer">
-                <button className="watch-trailer-button">
-                  Watch the trailer
-                </button>
+                <button className="watch-trailer-button">Watch the trailer</button>
               </a>
             )}
             <button
               onClick={handleFavoriteToggle}
-              className={`favorite-button ${isFavorite ? "filled" : ""}`}
+              className={`favorite-button ${isFavorite ? "filled" : ""} ${shake ? "shake" : ""} ${favorited ? "favorited" : ""}`}
             >
               {isFavorite ? "★" : "☆"} Add to Favorites
             </button>
@@ -190,27 +262,27 @@ const MovieDetail = () => {
                 <p>{movie.vote_count?.toLocaleString()}</p>
               </div>
             </div>
+          </div>
+        </div>
 
-            <div className="movie-detail-cast">
-              <h2>Cast</h2>
-              <div className="cast-list">
-                {cast.map((actor) => (
-                  <div key={actor.cast_id} className="cast-member">
-                    <img
-                      src={
-                        actor.profile_path
-                          ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
-                          : "https://via.placeholder.com/150"
-                      }
-                      alt={actor.name}
-                      className="cast-image"
-                    />
-                    <p>{actor.name}</p>
-                    <p className="character">{actor.character}</p>
-                  </div>
-                ))}
+
+        <div className="movie-detail-cast">
+          <h2>Cast</h2>
+          <div className="cast-list">
+            {cast.map((actor) => (
+              <div key={actor.cast_id} className="cast-member">
+                <img
+                  src={
+                    actor.profile_path
+                      ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
+                      : "https://via.placeholder.com/150"
+                  }
+                  alt={actor.name}
+                />
+                <p className="cast-name">{actor.name}</p>
+                <p className="cast-character">{actor.character}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
