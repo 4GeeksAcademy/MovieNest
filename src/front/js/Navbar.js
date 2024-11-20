@@ -2,17 +2,23 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 import "../styles/navbar.css";
+import { FaBars, FaTimes } from "react-icons/fa"; 
 
 const Navbar = () => {
   const [movies, setMovies] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [menuOpen, setMenuOpen] = useState(false); 
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth(); // Asegúrate de usar `username` del contexto
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
     alert("You have logged out.");
     navigate("/");
+  };
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
   };
 
   async function fetchMovies(searchQuery = '') {
@@ -69,70 +75,45 @@ const Navbar = () => {
   );
 
   return (
-    <header className="navbar sticky-nav">
-      <div className="logo">
-        <h2>
-          <Link to="/">MovieNest</Link>
-        </h2>
-      </div>
-
-      <nav>
-        <ul className="nav-links">
-          <div className="dropdown">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Search movies by title"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            />
-
-            {searchTerm && (
-              <ul className="dropdown-menu show" style={{ maxHeight: "400px", overflowY: "auto", width: "100%", maxWidth: "500px" }}>
-                {filteredMovies.length > 0 ? (
-                  filteredMovies.map((movie) => (
-                    <li key={movie.id}>
-                      <a className="dropdown-item text-truncate" onClick={() => navigate(`/movie/${movie.id}`)}>{movie.original_title}</a>
-                    </li>
-                  ))
-                ) : (
-                  <li className="dropdown-item text-muted">No movies found</li>
-                )}
-              </ul>
+    <header className="navbar">
+      <div className="navbar-container">
+        <div className="logo">
+          <h2>
+            <Link to="/">MovieNest</Link>
+          </h2>
+        </div>
+        <button className="menu-toggle" onClick={toggleMenu}>
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <nav className={`nav-menu ${menuOpen ? "open" : ""}`}>
+          <ul className="nav-links">
+            <li>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Search movies by title"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </li>
+            <li><Link to="/">Home</Link></li>
+            <li><Link to="/favorites">Favorites</Link></li>
+            {!isAuthenticated ? (
+              <>
+                <li><Link to="/login" className="login-button">Login</Link></li>
+                <li><Link to="/signup" className="signup-button">Signup</Link></li>
+              </>
+            ) : (
+              <>
+                <li><span>Welcome, <strong>{user?.username}</strong></span></li>
+                <li>
+                  <button className="logout-button" onClick={handleLogout}>Logout</button>
+                </li>
+              </>
             )}
-          </div>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/favorites">Favorites</Link>
-          </li>
-          {!isAuthenticated && (
-            <>
-              <li>
-                <Link to="/login" className="login-button">Login</Link>
-              </li>
-              <li>
-                <Link to="/signup" className="signup-button">Signup</Link>
-              </li>
-            </>
-          )}
-          {isAuthenticated && (
-            <>
-              <li>
-                <span>Welcome, <strong>{user?.username}</strong> </span> {/* Mostrar el username aquí */}
-              </li>
-              <li>
-                <button className="logout-button" onClick={handleLogout}>
-                  Logout
-                </button>
-              </li>
-            </>
-          )}
-        </ul>
-      </nav>
+          </ul>
+        </nav>
+      </div>
     </header>
   );
 };

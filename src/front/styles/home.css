@@ -1,9 +1,11 @@
+
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #0f172a;
   color: #f8fafc;
+ 
+  
 }
 
 /* Header Styles */
@@ -47,16 +49,16 @@ nav ul li a {
 nav ul li a:hover {
   color: #e11d48;
 }
+main {
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)); /* Gradiente que se combina con el fondo */
+  padding: 0;
+  min-height: 100vh;
+}
 
-/* Welcome Section Styles */
 .welcome-section {
   text-align: center;
   padding: 4rem 2rem;
-  background: linear-gradient(
-    to bottom,
-    rgba(15, 23, 42, 0.8),
-    rgba(15, 23, 42, 0.95)
-  );
+  
 }
 
 .welcome-section h1 {
@@ -318,3 +320,4 @@ footer {
 .pagination-controls button:last-child:hover:not(:disabled) {
   background-color: #be123c;
 }
+

@@ -21,7 +21,7 @@ class User(db.Model):
 class Favorite(db.Model):
     __tablename__ = 'favorite'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  #add in here for the favorite page like on the routes
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) 
     movie_id = db.Column(db.String(120), nullable=False)
     movie_name = db.Column(db.String(120), nullable=False)
 

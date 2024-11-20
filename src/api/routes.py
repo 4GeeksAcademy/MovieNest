@@ -4,16 +4,16 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from api.blacklist import blacklist
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash , check_password_hash
-# Crear la instancia de Flask primero
+
 app = Flask(__name__)
 
-# Inicializar la aplicación
+
 api = Blueprint('api', __name__)
 
-# Habilitar CORS
+
 CORS(api)
 
-# Endpoints de autenticación
+
 
 @api.route('/login', methods=['POST'])
 def login_user():

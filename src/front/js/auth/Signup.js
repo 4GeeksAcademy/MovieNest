@@ -1,23 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";  // Asegúrate de que useAuth tenga una función 'login'
+import { useAuth } from "../AuthContext";
 import Navbar from "../Navbar";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import '../../styles/signup.css';
 
 const RegisterUser = () => {
   const [inputValues, setInputValues] = useState({ email: "", password: "", username: "" });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();  // Hook de autenticación para hacer login después del registro
-
-  useEffect(() => {
-    let isMounted = true; // Flag to track component mount status
-
-    return () => {
-      isMounted = false; // Set to false on unmount
-    };
-  }, []);
-
+  const { login } = useAuth();
 
   const validateForm = () => {
     if (!inputValues.email || !inputValues.password || !inputValues.username) {
@@ -35,72 +29,8 @@ const RegisterUser = () => {
     return true;
   };
 
-  // const handleRegister = async (e) => {
-  //   e.preventDefault(); // Prevenir el recargado del formulario
-  //   setError(null); // Limpiar el mensaje de error
-  //   setIsLoading(true); // Iniciar estado de carga
-
-  //   // Validar el formulario antes de continuar
-  //   if (!validateForm()) {
-  //     setIsLoading(false); // Detener el estado de carga si la validación falla
-  //     return;
-  //   }
-
-  //   try {
-  //     // Hacer el request de registro
-  //     const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(inputValues),
-  //     });
-
-  //     if (!rawResponse.ok) {
-  //       const errorResponse = await rawResponse.json();
-  //       console.log("Error from backend:", errorResponse); // Imprimir respuesta de error
-  //       throw new Error(errorResponse.message || "Signup failed");
-  //     }
-
-  //     const response = await rawResponse.json();
-  //     console.log("Signup success:", response); // Imprimir la respuesta exitosa
-
-  //     // Loguear automáticamente al usuario después de registrar
-  //     const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         email: inputValues.email,
-  //         password: inputValues.password,
-  //       }),
-  //     });
-
-  //     if (!loginResponse.ok) {
-  //       const loginError = await loginResponse.json();
-  //       throw new Error(loginError.message || "Login failed after signup");
-  //     }
-
-  //     const loginData = await loginResponse.json();
-  //     console.log("Login success:", loginData); // Imprimir respuesta de login
-
-  //     // Llamar al login (si tu sistema usa un hook/context para la autenticación)
-  //     login(loginData.token);  // Asumiendo que 'login' guarda el token en el contexto o localStorage
-
-  //     // Redirigir a la página principal o dashboard
-  //     navigate("/home");  // Cambia esta ruta por la que desees
-
-  //   } catch (error) {
-  //     console.error(error);
-  //     setError(error.message || "An error occurred. Please try again.");
-  //   } finally {
-  //     setIsLoading(false); // Detener estado de carga
-  //   }
-  // };
-
   const handleRegister = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setError(null);
     setIsLoading(true);
 
@@ -110,7 +40,7 @@ const RegisterUser = () => {
     }
 
     try {
-      const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
+      const signupResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -118,13 +48,10 @@ const RegisterUser = () => {
         body: JSON.stringify(inputValues),
       });
 
-      if (!rawResponse.ok) {
-        const errorResponse = await rawResponse.json();
+      if (!signupResponse.ok) {
+        const errorResponse = await signupResponse.json();
         throw new Error(errorResponse.message || "Signup failed");
       }
-
-      const response = await rawResponse.json();
-      console.log("Signup success:", response);
 
       const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
         method: "POST",
@@ -143,25 +70,16 @@ const RegisterUser = () => {
       }
 
       const loginData = await loginResponse.json();
-      console.log("Login success:", loginData);
-
       login(loginData.token);
+      navigate("/");
 
-      if (isMounted) {
-        navigate("/home");
-      }
-    } catch (error) {
-      console.error(error);
-      if (isMounted) {
-        setError(error.message || "An error occurred. Please try again.");
-      }
+    } catch (err) {
+      console.error("Error during signup/login:", err);
+      setError(err.message || "An error occurred. Please try again.");
     } finally {
-      if (isMounted) {
-        setIsLoading(false);
-      }
+      setIsLoading(false);
     }
   };
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -175,78 +93,56 @@ const RegisterUser = () => {
   return (
     <div>
       <Navbar />
-      <div className="container">
-        <div className="row justify-content-center mt-5">
-          <div className="col-12 col-md-6 col-lg-4">
-            <div className="card shadow">
-              <div className="card-body">
-                <h2 className="card-title text-center mb-4 text-dark">Sign Up</h2>
+      <div className="register-container">
+        <div className="register-card">
+          <h1 className="register-title">Create Your Account</h1>
 
-                <form onSubmit={handleRegister}>
-                  <div className="mb-3">
-                    <input
-                      type="text"
-                      name="username"
-                      className="form-control"
-                      placeholder="Username"
-                      value={inputValues.username}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
+          {error && <div className="error-message">{error}</div>}
 
-                  <div className="mb-3">
-                    <input
-                      type="email"
-                      name="email"
-                      className="form-control"
-                      placeholder="Email"
-                      value={inputValues.email}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-3">
-                    <input
-                      type="password"
-                      name="password"
-                      className="form-control"
-                      placeholder="Password"
-                      value={inputValues.password}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-
-                  {error && (
-                    <div className="alert alert-danger" role="alert">
-                      {error}
-                    </div>
-                  )}
-
-                  <button
-                    type="submit"
-                    className={`btn btn-primary w-100 ${isLoading ? "disabled" : ""}`}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <span
-                          className="spinner-border spinner-border-sm me-2"
-                          role="status"
-                          aria-hidden="true"
-                        ></span>
-                        Signing up...
-                      </>
-                    ) : (
-                      "Sign Up"
-                    )}
-                  </button>
-                </form>
-              </div>
-            </div>
+          <div className="form-group">
+            <input
+              type="text"
+              name="username"
+              className="register-input"
+              placeholder="Username"
+              value={inputValues.username}
+              onChange={handleInputChange}
+            />
           </div>
+
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              className="register-input"
+              placeholder="Email"
+              value={inputValues.email}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="password-container">
+            <input
+              type={passwordVisible ? "text" : "password"}
+              name="password"
+              className="register-input"
+              placeholder="Password"
+              value={inputValues.password}
+              onChange={handleInputChange}
+            />
+            <button
+              type="button"
+              className="password-toggle"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </button>
+          </div>
+
+          <button onClick={handleRegister} className="register-button" disabled={isLoading}>
+            {isLoading ? "Signing up..." : "Sign Up"}
+          </button>
+
         </div>
       </div>
     </div>
