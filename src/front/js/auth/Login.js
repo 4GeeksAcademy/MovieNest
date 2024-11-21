@@ -3,6 +3,7 @@ import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { GoogleLogin } from "@react-oauth/google"; 
 import '../../styles/login.css';
 
 function Login() {
@@ -81,6 +82,36 @@ function Login() {
     }
   };
 
+
+  // const handleGoogleLogin = async (response) => {
+  //   try {
+  //     const { credential } = response;
+  //     const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/google-login`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ token: credential }),
+  //     });
+
+  //     if (!rawResponse.ok) {
+  //       throw new Error("Google login failed");
+  //     }
+
+  //     const translatedResponse = await rawResponse.json();
+  //     const token = translatedResponse.access_token;
+  //     const username = translatedResponse.username;
+
+  //     if (token) {
+  //       login(token, { username });
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     setErrorMessage("Google login failed");
+  //   }
+  // };
+
   return (
     <div>
       <Navbar />
@@ -132,6 +163,12 @@ function Login() {
           <button onClick={onLogin} className="login-button">
             Sign In
           </button>
+
+
+          {/* <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => setErrorMessage("Google login failed")}
+          /> */}
         </div>
       </div>
     </div>

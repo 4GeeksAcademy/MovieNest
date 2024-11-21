@@ -4,6 +4,10 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from api.blacklist import blacklist
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash , check_password_hash
+# import google.auth.transport.requests
+# from google.auth import jwt
+# from google.auth.transport.requests import Request
+# from google.oauth2 import id_token
 
 app = Flask(__name__)
 
@@ -13,7 +17,37 @@ api = Blueprint('api', __name__)
 
 CORS(api)
 
+# @app.route("/google-signup", methods=["POST"])
+# def google_login():
+#     token = request.json.get("token")
+#     try:
+#         # Define tu CLIENT_ID que es el que obtuviste en la consola de Google Cloud
+#         CLIENT_ID = "693442981264-1knfjdrd93nirvo85re8qhl7qguhgce0.apps.googleusercontent.com"
 
+#         # Verifica el token y obtiene la información del usuario
+#         request = Request()  # Importante para validar el token correctamente
+#         id_info = id_token.verify_oauth2_token(token, request, CLIENT_ID)
+        
+#         # Aquí tienes la información del usuario, como el email y el nombre
+#         user_email = id_info["email"]
+#         user_name = id_info.get("name", "Usuario")
+
+#         # Verificar si el usuario ya existe
+#         user = User.query.filter_by(email=user_email).first()
+#         if user is None:
+#             # Si el usuario no existe, crear un nuevo usuario
+#             user = User(email=user_email, username=user_name)
+#             db.session.add(user)
+#             db.session.commit()
+
+#         # Crear un token de acceso para la sesión
+#         access_token = create_access_token(identity=user.id)
+
+#         # Responder con el token de acceso y el nombre de usuario
+#         return jsonify({"access_token": access_token, "username": user.username})
+
+#     except Exception as e:
+#         return jsonify({"error": "Invalid token", "message": str(e)}), 401
 
 @api.route('/login', methods=['POST'])
 def login_user():

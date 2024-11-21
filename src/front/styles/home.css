@@ -50,7 +50,7 @@ nav ul li a:hover {
   color: #e11d48;
 }
 main {
-  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)); /* Gradiente que se combina con el fondo */
+  background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)); 
   padding: 0;
   min-height: 100vh;
 }
@@ -257,7 +257,7 @@ footer {
 }
 
 .favorite-btn.filled {
-  color: #ffcc00; /* Color dorado para estrella llena */
+  color: #ffcc00; 
 }
 
 
@@ -321,7 +321,7 @@ footer {
   background-color: #be123c;
 }
 
-/* Estilo para el botón favorito con la animación de sacudida */
+
 .favorite-btn.shake {
   animation: shake 0.5s ease-in-out;
 }
@@ -343,8 +343,8 @@ footer {
 }
 
 .favorite-btn.favorited {
-  transform: scale(1.2); /* Efecto de expansión */
-  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7); /* Efecto de resplandor */
+  transform: scale(1.2); 
+  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7);
 }
 
 @keyframes shake {
@@ -364,8 +364,8 @@ footer {
 }
 
 .favorite-btn.favorited {
-  transform: scale(1.2); /* Efecto de expansión */
-  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7); /* Efecto de resplandor */
+  transform: scale(1.2); 
+  box-shadow: 0 0 10px rgba(255, 223, 0, 0.7); 
 }
 
 @keyframes shake {

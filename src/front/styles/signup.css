@@ -1,143 +1,142 @@
 /* Estilos generales de la página */
 body {
-    background: linear-gradient(to bottom, #1a1f2c, #121620);
-    min-height: 100vh;
-  }
-  
-  /* Contenedor principal del registro */
-  .register-container {
-    min-height: calc(100vh - 64px); /* Ajusta esto según la altura de tu navbar */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  
-  /* Tarjeta de registro */
-  .register-card {
-    width: 100%;
-    max-width: 400px;
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border-radius: 15px;
-    padding: 2rem;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Título */
-  .register-title {
-    color: #ffffff;
-    font-size: 2rem;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-  
-  /* Campos de entrada */
-  .register-input {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(0, 0, 0, 0.2);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    color: white;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    margin-bottom: 1rem;
-  }
-  
-  .register-input:focus {
-    outline: none;
-    border-color: #dc3545;
-    box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
-  }
-  
-  .register-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-  }
-  
-  /* Botón de mostrar/ocultar contraseña */
-  .password-toggle {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    color: rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
-  
-  .password-toggle:hover {
-    color: white;
-  }
-  
-  /* Contenedor de la contraseña */
-  .password-container {
-    position: relative;
-    margin-bottom: 1rem;
-  }
-  
-  /* Mensajes de error */
-  .error-message {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.2);
-    color: #ff8d8d;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-    margin-bottom: 1rem;
-  }
-  
-  .field-error {
-    color: #ff8d8d;
-    font-size: 0.875rem;
-    margin-top: -0.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  /* Estilos para los campos inválidos */
-  .register-input.is-invalid {
-    border-color: #dc3545;
-  }
-  
-  .invalid-feedback {
-    color: #ff8d8d;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-  
-  /* Estilo del botón de submit */
+  background: linear-gradient(to bottom, #1a1f2c, #121620);
+  min-height: 100vh;
+}
+
+
+.register-container {
+  min-height: calc(100vh - 64px); 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+
+.register-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+.register-title {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+
+.register-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.register-input:focus {
+  outline: none;
+  border-color: #dc3545;
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25);
+}
+
+.register-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.password-toggle:hover {
+  color: white;
+}
+
+
+.password-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+/* Mensajes de error */
+.error-message {
+  background: rgba(220, 53, 69, 0.1);
+  border: 1px solid rgba(220, 53, 69, 0.2);
+  color: #ff8d8d;
+  padding: 10px;
+  border-radius: 8px;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.field-error {
+  color: #ff8d8d;
+  font-size: 0.875rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1rem;
+}
+
+
+.register-input.is-invalid {
+  border-color: #dc3545;
+}
+
+.invalid-feedback {
+  color: #ff8d8d;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+
 .register-button {
-    width: 100%;
-    padding: 12px 16px;
-    background: #dc3545; /* Rojo vibrante */
-    border: none;
-    border-radius: 8px;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    margin-top: 1rem;
-  }
-  
-  /* Estilo cuando el botón es hover */
-  .register-button:hover {
-    background-color: #c82333; /* Rojo más oscuro */
-    transform: scale(1.05); /* Le da un pequeño efecto de escala */
-  }
-  
-  /* Estilo cuando el botón está deshabilitado */
-  .register-button:disabled {
-    background: rgba(220, 53, 69, 0.6); /* Rojo translúcido */
-    cursor: not-allowed;
-  }
-  
-  /* Estilo cuando el botón es foco (clickeado) */
-  .register-button:focus {
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.3); /* Sombra al hacer foco */
-  }
-  
+  width: 100%;
+  padding: 12px 16px;
+  background: #dc3545; 
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 1rem;
+}
+
+
+.register-button:hover {
+  background-color: #c82333; 
+  transform: scale(1.05); 
+}
+
+
+.register-button:disabled {
+  background: rgba(220, 53, 69, 0.6); 
+  cursor: not-allowed;
+}
+
+
+.register-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(220, 53, 69, 0.3); 
+}

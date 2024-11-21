@@ -6,8 +6,8 @@ function FavoriteMovieCard({ movie_id, movie_name }) {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
     const [isFavorite, setIsFavorite] = useState(false);
-    const [shake, setShake] = useState(false); // Para manejar la sacudida del botón
-    const [favorited, setFavorited] = useState(false); // Para manejar el efecto de agregado a favoritos
+    const [shake, setShake] = useState(false);
+    const [favorited, setFavorited] = useState(false);
 
     useEffect(() => {
         const checkFavoriteStatus = async () => {
@@ -39,10 +39,10 @@ function FavoriteMovieCard({ movie_id, movie_name }) {
 
     const handleFavoriteToggle = async () => {
         if (!isAuthenticated) {
-            // Aplicamos la sacudida si no está autenticado
+
             setShake(true);
 
-            // Restablecer la sacudida después de un corto tiempo
+
             setTimeout(() => setShake(false), 500);
             return;
         }
@@ -71,8 +71,8 @@ function FavoriteMovieCard({ movie_id, movie_name }) {
                 setIsFavorite(!isFavorite);
                 setFavorited(true);
 
-                // Restablecer el estado de "favorito" después de un corto tiempo
-                setTimeout(() => setFavorited(false), 800); // Efecto de 800ms
+
+                setTimeout(() => setFavorited(false), 800);
             }
         } catch (error) {
             console.error("Error toggling favorite:", error);

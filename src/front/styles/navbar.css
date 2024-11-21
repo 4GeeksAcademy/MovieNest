@@ -1,27 +1,27 @@
-/* Estilos comunes para los botones Login y Signup */
+
 .login-button, .signup-button, .logout-button {
-  background-color: #e11d48; /* Mismo color que el navbar */
+  background-color: #e11d48; 
   color: white;
   border: none;
-  padding: 8px 18px; /* Aumentamos el tamaño de los botones */
-  font-size: 1rem; /* Aumentamos el tamaño del texto */
+  padding: 8px 18px; 
+  font-size: 1rem; 
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
   display: inline-block;
   text-align: center;
-  min-width: 110px; /* Hacemos el botón un poco menos ancho */
-  text-decoration: none; /* Eliminar subrayado en enlaces */
-  box-sizing: border-box; /* Asegura que el padding no afecte el tamaño */
+  min-width: 110px; 
+  text-decoration: none; 
+  box-sizing: border-box; 
 }
 
 .login-button:hover, .signup-button:hover, .logout-button:hover {
-  background-color: #8d132d; /* Color más oscuro al pasar el ratón */
+  background-color: #8d132d; 
 }
 
-/* Estilo para el botón Signup con <strong> */
+
 .signup-button strong {
-  font-weight: bold; /* Hace que el texto dentro del botón Signup esté en negrita */
+  font-weight: bold; 
 }
 
 /* Navbar */
@@ -30,11 +30,11 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #1c1c1c; /* Fondo oscuro para el navbar */
+  background-color: #1c1c1c;
   color: white;
 }
 
-/* Contenedor del navbar */
+
 .navbar-container {
   display: flex;
   justify-content: space-between;
@@ -44,16 +44,16 @@
 
 .logo h2 a {
   text-decoration: none;
-  color: #e11d48; /* Color acorde al navbar */
+  color: #e11d48; 
   font-size: 1.5rem;
 }
 
-/* Menú desplegable en dispositivos pequeños */
+
 .nav-menu {
   display: flex;
   gap: 15px;
   align-items: center;
-  margin-left: auto; /* Para alinear los enlaces a la derecha */
+  margin-left: auto; 
 }
 
 .nav-links {
@@ -62,21 +62,21 @@
   gap: 1.5rem;
   margin: 0;
   padding: 0;
-  align-items: center; /* Asegura que los elementos estén centrados verticalmente */
+  align-items: center; 
 }
 
 .nav-links li {
   display: flex;
 }
 
-/* Estilo de la barra de búsqueda */
+
 .form-control {
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
 }
 
-/* Estilos para el menu de hamburguesa en móvil */
+
 .menu-toggle {
   display: none;
   font-size: 1.5rem;
@@ -86,7 +86,7 @@
   cursor: pointer;
 }
 
-/* Estilo para el menú desplegable (hamburguesa) */
+
 .nav-menu.open {
   display: flex;
   flex-direction: column;
@@ -102,7 +102,7 @@
   .nav-menu {
     display: none;
     flex-direction: column;
-    background-color: #1c1c1c; /* Fondo oscuro del navbar */
+    background-color: #323232; 
     position: absolute;
     top: 100%;
     left: 0;
@@ -111,7 +111,7 @@
     z-index: 1000;
   }
 
-  /* Alineamos los enlaces de navegación en el centro en pantallas pequeñas */
+  
   .nav-links {
     flex-direction: column;
     text-align: center;

@@ -4,16 +4,16 @@ body {
   min-height: 100vh;
 }
 
-/* Contenedor principal del login */
+
 .login-container {
-  min-height: calc(100vh - 64px); /* Ajusta esto según la altura de tu navbar */
+  min-height: calc(100vh - 64px); 
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
 }
 
-/* Tarjeta de login */
+
 .login-card {
   width: 100%;
   max-width: 400px;
@@ -24,7 +24,7 @@ body {
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
 }
 
-/* Título */
+
 .login-title {
   color: #ffffff;
   font-size: 2rem;
@@ -33,7 +33,6 @@ body {
   margin-bottom: 2rem;
 }
 
-/* Campos de entrada */
 .login-input {
   width: 100%;
   padding: 12px 16px;
@@ -56,7 +55,7 @@ body {
   color: rgba(255, 255, 255, 0.5);
 }
 
-/* Botón de mostrar/ocultar contraseña */
+
 .password-toggle {
   position: absolute;
   right: 16px;
@@ -73,13 +72,13 @@ body {
   color: white;
 }
 
-/* Contenedor de la contraseña */
+
 .password-container {
   position: relative;
   margin-bottom: 1rem;
 }
 
-/* Mensajes de error */
+
 .error-message {
   background: rgba(220, 53, 69, 0.1);
   border: 1px solid rgba(220, 53, 69, 0.2);
@@ -97,7 +96,7 @@ body {
   margin-bottom: 1rem;
 }
 
-/* Link de olvidé contraseña */
+
 .forgot-password {
   text-align: right;
   margin-bottom: 1rem;
@@ -114,7 +113,7 @@ body {
   color: white;
 }
 
-/* Estilos para los campos inválidos */
+
 .login-input.is-invalid {
   border-color: #dc3545;
 }

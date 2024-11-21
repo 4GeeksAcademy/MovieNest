@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -11,40 +11,9 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
 
   const fallbackImage = "https://placehold.co/300x450";
 
-  useEffect(() => {
-    const checkFavoriteStatus = async () => {
-      if (isAuthenticated && id) {
-        try {
-          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-
-          const favorites = await response.json();
-          // Check if current movie is in favorites
-          const isFav = favorites.some(favorite => favorite.movie_id === id.toString());
-          setIsFavorite(isFav);
-        } catch (error) {
-          console.error("Error fetching favorites:", error);
-        }
-      }
-    };
-
-    checkFavoriteStatus();
-  }, [id, isAuthenticated]);
-
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) {
-      // Aplicamos la sacudida si no está autenticado
       setShake(true);
-
-      // Restablecer la sacudida después de un corto tiempo
       setTimeout(() => setShake(false), 500);
       return;
     }
@@ -72,10 +41,9 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
       if (response.ok) {
         setIsFavorite(!isFavorite);
         setFavorited(true);
-
-        // Restablecer el estado de "favorito" después de un corto tiempo
-        setTimeout(() => setFavorited(false), 800); // Efecto de 800ms
-
+        setTimeout(() => setFavorited(false), 800);
+      } else {
+        console.error("Error updating favorites:", response.statusText);
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);

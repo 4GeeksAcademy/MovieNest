@@ -1,14 +1,14 @@
 
-/* Contenedor general */
+
 .movie-detail-container {
   background-size: cover;
   background-position: center;
-  padding-top: 80px; /* Espaciado para que no quede debajo de la navbar */
+  padding-top: 80px; 
   color: #fff;
   min-height: 100vh;
 }
 
-/* Contenido principal de la película */
+
 .movie-detail-content {
   display: flex;
   flex-direction: row;
@@ -18,7 +18,7 @@
   margin: 0 auto;
 }
 
-/* Imagen del poster de la película */
+
 .movie-detail-image img {
   width: 250px;
   height: auto;
@@ -26,7 +26,7 @@
   margin-right: 20px;
 }
 
-/* Botón de trailer */
+
 .watch-trailer-button {
   background-color: #e50914;
   color: white;
@@ -41,7 +41,7 @@
   background-color: #b20710;
 }
 
-/* Botón de agregar a favoritos */
+
 .favorite-button {
   background-color: transparent;
   border: 2px solid #fff;
@@ -64,7 +64,7 @@
   color: #000;
 }
 
-/* Información de la película */
+
 .movie-detail-info-container {
   flex-grow: 1;
   display: flex;
@@ -110,22 +110,21 @@
   margin-top: 20px;
 }
 
-/* Sección del cast */
-/* Sección del cast */
+
 .movie-detail-cast {
   padding: 30px;
   background-color: rgba(0, 0, 0, 0.1);
   margin-top: 40px;
-  display: flex;           /* Usamos flexbox */
-  flex-direction: column;  /* Aseguramos que los elementos se apilen de manera vertical */
-  align-items: center;     /* Centra los elementos dentro del contenedor */
+  display: flex;           
+  flex-direction: column;  
+  align-items: center;     
 }
 
-/* Lista de cast */
+
 .cast-list {
   display: flex;
-  flex-wrap: wrap;       /* Permite que los elementos se ajusten en varias filas */
-  justify-content: center; /* Centra los actores horizontalmente */
+  flex-wrap: wrap;      
+  justify-content: center;
   gap: 15px;
   padding-bottom: 20px;
   scroll-behavior: smooth;
@@ -135,7 +134,7 @@
   text-align: center;
 }
 
-/* Estilos de la imagen de los actores */
+
 .cast-image {
   width: 120px;
   height: 180px;
@@ -188,7 +187,7 @@
   }
 
   .cast-list {
-    justify-content: center; /* Asegura que se sigan centrando los elementos en pantallas pequeñas */
+    justify-content: center;
 }
 
 }

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Navbar from "../Navbar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+// import { GoogleLogin } from "@react-oauth/google";  
 import '../../styles/signup.css';
 
 const RegisterUser = () => {
@@ -81,54 +82,40 @@ const RegisterUser = () => {
     }
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setInputValues((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setError(null);
-  };
-
   return (
     <div>
       <Navbar />
       <div className="register-container">
         <div className="register-card">
-          <h1 className="register-title">Create Your Account</h1>
-
+          <h1 className="register-title">Sign Up</h1>
           {error && <div className="error-message">{error}</div>}
 
-          <div className="form-group">
-            <input
-              type="text"
-              name="username"
-              className="register-input"
-              placeholder="Username"
-              value={inputValues.username}
-              onChange={handleInputChange}
-            />
-          </div>
+          <input
+            type="text"
+            name="username"
+            value={inputValues.username}
+            placeholder="Username"
+            className="register-input"
+            onChange={e => setInputValues({ ...inputValues, username: e.target.value })}
+          />
 
-          <div className="form-group">
-            <input
-              type="email"
-              name="email"
-              className="register-input"
-              placeholder="Email"
-              value={inputValues.email}
-              onChange={handleInputChange}
-            />
-          </div>
+          <input
+            type="email"
+            name="email"
+            value={inputValues.email}
+            placeholder="Email"
+            className="register-input"
+            onChange={e => setInputValues({ ...inputValues, email: e.target.value })}
+          />
 
           <div className="password-container">
             <input
               type={passwordVisible ? "text" : "password"}
               name="password"
-              className="register-input"
-              placeholder="Password"
               value={inputValues.password}
-              onChange={handleInputChange}
+              placeholder="Password"
+              className="register-input"
+              onChange={e => setInputValues({ ...inputValues, password: e.target.value })}
             />
             <button
               type="button"
@@ -140,9 +127,17 @@ const RegisterUser = () => {
           </div>
 
           <button onClick={handleRegister} className="register-button" disabled={isLoading}>
-            {isLoading ? "Signing up..." : "Sign Up"}
+            {isLoading ? "Signing Up..." : "Sign Up"}
           </button>
 
+          {/* Componente GoogleLogin comentado */}
+          {/* 
+          <GoogleLogin
+            onSuccess={handleGoogleLogin}
+            onError={() => setError("Google signup failed")}
+            clientId="693442981264-1knfjdrd93nirvo85re8qhl7qguhgce0.apps.googleusercontent.com" 
+          />
+          */}
         </div>
       </div>
     </div>

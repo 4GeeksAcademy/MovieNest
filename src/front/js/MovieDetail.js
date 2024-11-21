@@ -119,14 +119,14 @@ const MovieDetail = () => {
 
   const handleFavoriteToggle = async () => {
     if (!localStorage.getItem("token")) {
-      // Si no está autenticado, aplicamos el efecto de shake en el botón
+     
       setShake(true);
-      setTimeout(() => setShake(false), 500); // Reseteamos el estado de shake después de 0.5s
+      setTimeout(() => setShake(false), 500); 
       return;
     }
 
     try {
-      // Verificar si la película está en favoritos
+    
       const responseGet = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
         method: "GET",
         headers: {
@@ -136,12 +136,12 @@ const MovieDetail = () => {
 
       if (responseGet.ok) {
         const favorites = await responseGet.json();
-        // Comprobar si la película está en favoritos
+     
         const isAlreadyFavorite = favorites.some(favorite => favorite.movie_id === id);
 
         if (isAlreadyFavorite) {
-          // Si ya está en favoritos, eliminamos
-          const responseDelete = await fetch(`${process.env.BACKEND_URL}/api/favorites/${parseInt(id)}`, {  // Cambia a parseInt
+     
+          const responseDelete = await fetch(`${process.env.BACKEND_URL}/api/favorites/${parseInt(id)}`, {  
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -149,14 +149,14 @@ const MovieDetail = () => {
           });
 
           if (responseDelete.ok) {
-            setIsFavorite(false);  // Actualizamos el estado de isFavorite a false
+            setIsFavorite(false);  
             setFavorited(true);
-            setTimeout(() => setFavorited(false), 800); // Efecto visual de eliminado
+            setTimeout(() => setFavorited(false), 800); 
           } else {
             console.log("Error al eliminar de favoritos");
           }
         } else {
-          // Si no está en favoritos, lo agregamos
+  
           const responsePost = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             method: "POST",
             headers: {
@@ -170,9 +170,9 @@ const MovieDetail = () => {
           });
 
           if (responsePost.ok) {
-            setIsFavorite(true); // Actualizamos el estado de isFavorite a true
+            setIsFavorite(true); 
             setFavorited(true);
-            setTimeout(() => setFavorited(false), 800); // Efecto visual de agregado
+            setTimeout(() => setFavorited(false), 800); 
           } else {
             console.log("Error al agregar a favoritos");
           }
