@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+// import "./ForgotPassword.css";
+// import "../styles/forgotPassword.css";
+import "/src/front/styles/forgotPasswords.css";
 
 
 export const ForgotPassword = () => {
@@ -72,7 +75,7 @@ export const ForgotPassword = () => {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card shadow">
-                        <div className="card-body">
+                        <div className="card-body rounded">
                             <h2 className="text-center mb-4">{!hasToken ? "Forgot Password" : "Reset Password"}</h2>
                             <form onSubmit={handleSubmit}>
                                 {!hasToken ? (
