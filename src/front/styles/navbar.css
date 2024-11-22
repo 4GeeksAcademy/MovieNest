@@ -32,6 +32,7 @@
   padding: 1rem 2rem;
   background-color: #1c1c1c;
   color: white;
+  height: 4rem;
 }
 
 
@@ -39,6 +40,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
+}
+
+.sticky-nav {
+  position: fixed;
+  z-index: 100;
   width: 100%;
 }
 

@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main style={{ position: 'relative', backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
+      <main style={{ position: 'relative', marginTop: '4rem', backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed' }}>
         {/* Overlay oscuro */}
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
