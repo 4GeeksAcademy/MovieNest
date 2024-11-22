@@ -35,46 +35,50 @@ function Login() {
     setErrorMessage("");
     setEmailError("");
     setPasswordError("");
-  
+
     if (!inputValues.email || !inputValues.password) {
       setErrorMessage("Please fill all fields");
       return;
     }
-  
+
     if (!validateEmail(inputValues.email)) {
       setEmailError("Please enter a valid email");
       return;
     }
-  
+
     if (!validatePassword(inputValues.password)) {
       setPasswordError("Password must be at least 6 characters");
       return;
     }
-  
+
     try {
       const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",  
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(inputValues),  
+        body: JSON.stringify(inputValues),
       });
-  
+
+      console.log(rawResponse)
+
       if (!rawResponse.ok) {
         const errorData = await rawResponse.json();
         throw new Error(errorData.message || "Login Failed");
       }
-  
+
       const translatedResponse = await rawResponse.json();
+      console.log(translatedResponse)
       const token = translatedResponse.access_token;
+
       const user = {
         username: translatedResponse.username,
-       
+
       };
-  
+
       if (token) {
-        login(token, user);  
-        navigate("/");  
+        login(token, user);
+        navigate("/");
       } else {
         setErrorMessage("Login Failed");
       }
@@ -83,7 +87,7 @@ function Login() {
       setErrorMessage(error.message || "An error occurred during login");
     }
   };
-  
+
 
   return (
     <div>

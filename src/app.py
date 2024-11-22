@@ -42,6 +42,12 @@ MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 jwt = JWTManager(app)
 
+# JWT Configuration
+app.config['JWT_SECRET_KEY'] = os.environ.get('FLASK_APP_KEY', 'default-key')  
+app.config['JWT_TOKEN_LOCATION'] = ['headers']
+app.config['JWT_HEADER_NAME'] = 'Authorization'
+app.config['JWT_HEADER_TYPE'] = 'Bearer'
+
 # Configuración del admin
 setup_admin(app)
 
@@ -54,7 +60,17 @@ app.register_blueprint(api, url_prefix='/api')
 @jwt.token_in_blocklist_loader
 def check_if_token_in_blacklist(_, jwt_payload):
     jti = jwt_payload['jti']
+    print("Blacklist contents:", blacklist)  # Debug line
+    print("Checking JTI:", jti)  # Debug line
     return jti in blacklist
+
+@jwt.invalid_token_loader
+def invalid_token_callback(error):
+    print("Invalid token error details:", error)
+    return jsonify({
+        'message': 'Invalid token',
+        'error': 'invalid_token'
+    }), 401
 
 # Manejo de errores
 @app.errorhandler(APIException)

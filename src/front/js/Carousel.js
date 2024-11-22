@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../styles/home.css";
-import MovieCard from "./MovieCard";
+import MovieCard from "./MovieCard.js";
 
 const Carousel = () => {
   const [movies, setMovies] = useState([]);

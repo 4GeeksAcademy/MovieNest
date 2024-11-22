@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Favorite
-from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt
 from api.blacklist import blacklist
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash , check_password_hash
@@ -27,7 +27,8 @@ def login_user():
     # Verificar las credenciales
     if user and check_password_hash(user.password, password):
         # Crear el access_token
-        access_token = create_access_token(identity=user.id)
+        # access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=str(user.id))
 
         # Devolver el token y el nombre de usuario
         return jsonify({
@@ -64,7 +65,8 @@ def create_user():
 
         return jsonify({
             "message": "User created successfully. You can now log in.",
-            "access_token": create_access_token(identity=new_user.id),  # Token generado aquí
+            # "access_token": create_access_token(identity=new_user.id),  # Token generado aquí
+            "access_token": create_access_token(identity=str(new_user.id)),
             "username": new_user.username  # Asegúrate de que el `username` esté incluido
         }), 201
 
@@ -94,7 +96,6 @@ def get_private_data():
 
 # # Favorites endpoints
 
-
 @api.route('/favorites', methods=['POST'])
 @jwt_required()
 def add_favorite():
@@ -107,7 +108,7 @@ def add_favorite():
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    favorites = Favorite.query.filter_by(user_id=user.id)
+    favorites= Favorite.query.filter_by(user_id=user.id)
     for favorite in favorites:
         if favorite.movie_id == movie_id:
             return jsonify({"message": "Movie already in favorites"}), 400
@@ -122,11 +123,10 @@ def add_favorite():
 @api.route('/favorites/<int:movie_id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite(movie_id):
-    user_id = get_jwt_identity()  # Get user ID from JWT token
-
+    user_id = get_jwt_identity() # Get user ID from JWT token
     # Find the favorite by both user_id and movie_id
     favorite = Favorite.query.filter_by(user_id=user_id, movie_id=str(movie_id)).first()
-    
+
     if not favorite:
         # If the favorite isn't found, return a 404 response
         return jsonify({"message": "Favorite not found"}), 404
@@ -147,5 +147,4 @@ def favorites():
         return jsonify({'message': 'User not found'}), 404
 
     favorites = Favorite.query.filter_by(user_id=user.id).all()
-
     return jsonify([favorite.serialize() for favorite in favorites]), 200

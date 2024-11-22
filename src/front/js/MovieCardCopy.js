@@ -2,26 +2,59 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
-function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
+function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }) {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
   const [shake, setShake] = useState(false);
   const [favorited, setFavorited] = useState(false);
+  const fallbackImage = "https://placehold.co/300x450";
+
+  // useEffect(() => {
+  //   const checkFavoriteStatus = async () => {
+  //     if (isAuthenticated && id) {
+  //       try {
+  //         const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+  //           headers: {
+  //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+  //             "Content-Type": "application/json",
+  //           },
+  //         });
+
+  //         if (!response.ok) {
+  //           throw new Error(`HTTP error! status: ${response.status}`);
+  //         }
+
+  //         const favorites = await response.json();
+
+  //         const isFav = favorites.some(favorite => favorite.movie_id === id.toString());
+  //         setIsFavorite(isFav);
+  //       } catch (error) {
+  //         console.error("Error fetching favorites:", error);
+  //       }
+  //     }
+  //   };
+
+  //   checkFavoriteStatus();
+  // }, [id, isAuthenticated]);
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
       if (isAuthenticated && id) {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
         try {
           const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
             },
           });
 
           if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const error = await response.json();
+            throw new Error(error.message || 'Failed to fetch favorites');
           }
 
           const favorites = await response.json();
@@ -34,11 +67,14 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
     };
 
     checkFavoriteStatus();
-  }, [isAuthenticated, id]);
+  }, [id, isAuthenticated]);
 
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) {
+
       setShake(true);
+
+
       setTimeout(() => setShake(false), 500);
       return;
     }
@@ -49,6 +85,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
           },
         })
         : await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
@@ -59,14 +96,17 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
           },
           body: JSON.stringify({
             movie_id: id.toString(),
-            movie_name: name
+            movie_name: name,
           }),
         });
 
       if (response.ok) {
         setIsFavorite(!isFavorite);
         setFavorited(true);
+
+
         setTimeout(() => setFavorited(false), 800);
+
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
@@ -74,7 +114,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
   };
 
   return (
-    <div className="movie-card">
+    <div className="movie-card" ref={Ref}>
       <div className="movie-poster">
         <img
           src={`https://image.tmdb.org/t/p/w500${poster}` || fallbackImage}
@@ -96,7 +136,7 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate }) {
             Learn more
           </button>
           <button
-            className={`favorite-btn ${isFavorite ? "filled" : ""} ${shake ? "shake" : ""} ${favorited ? "favorited" : ""}`}
+            className={`favorite-btn ${isFavorite ? "filled" : ""} ${shake ? "shake" : ""} ${favorited ? "favorited" : ""}`} // Efecto cuando se agrega a favoritos
             onClick={handleFavoriteToggle}
           >
             {isFavorite ? "★" : "☆"}
