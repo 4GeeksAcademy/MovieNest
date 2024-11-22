@@ -10,6 +10,7 @@ from api.commands import setup_commands
 from api.blacklist import blacklist
 from flask_mail import Mail
 
+
 # Crear la instancia de Flask primero
 app = Flask(__name__)
 

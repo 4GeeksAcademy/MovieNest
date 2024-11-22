@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, User, Favorite
+from api.send_email import send_email
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity, get_jwt
 from api.blacklist import blacklist
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash , check_password_hash
+from datetime import datetime, timedelta
+import jwt
+import os
 
 app = Flask(__name__)
 
@@ -148,3 +152,43 @@ def favorites():
 
     favorites = Favorite.query.filter_by(user_id=user.id).all()
     return jsonify([favorite.serialize() for favorite in favorites]), 200
+
+@api.route("/forgot-password", methods=["POST"])
+def forgot_password(): 
+    email=request.json.get("email")
+
+    user = User.query.filter_by(email=email).first()
+    if user is None: 
+        return jsonify({"message": "email does not exist"}), 400
+    
+    expiration_time=datetime.utcnow() + timedelta(hours = 1)
+    token = jwt.encode({"email": email, "exp": expiration_time}, os.getenv("FLASK_APP_KEY"), algorithm="HS256")
+
+    email_value=f"Click here to reset password.\n{os.getenv('FRONTEND_URL')}/forgot-password?token={token}"
+    send_email(email, email_value, "Password Recovery: MovieNest")
+    return jsonify({"message": "recovery email sent"}), 200
+    
+
+
+@api.route("/reset-password/<token>", methods=["PUT"])
+def reset_password(token):
+    data=request.get_json()
+    password=data.get("password")
+
+    try:
+        decoded_token=jwt.decode(token, os.getenv("FLASK_APP_KEY"), algorithms=["HS256"])
+        email=decoded_token.get("email")
+    except jwt.ExpiredSignatureError:
+        return jsonify({"message": "Token has expired" }), 400
+    except jwt.InvalidTokenError:
+        return jsonify({"message": "Invalid token"}), 400
+    
+    user=User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"message": "User does not exist"}), 400
+    
+    user.password=generate_password_hash(password)
+    db.session.commit()
+
+    send_email(email, "password successfully reset", "password reset confirmation for MovieNest")
+    return jsonify({"message": "password reset email sent"}), 200

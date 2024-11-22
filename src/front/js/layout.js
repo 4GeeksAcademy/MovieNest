@@ -9,6 +9,9 @@ import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Favorites from "./Favorite";
 
+import { ForgotPassword } from "./forgotPassword";
+import { ChangePassword } from "./changePassword";
+
 const Layout = () => {
   const basename = process.env.BASENAME || "";
 
@@ -24,6 +27,8 @@ const Layout = () => {
           <Route element={<Private />} path="/private" />
           <Route element={<Favorites />} path="/favorites" />
           <Route element={<h1>Not found!</h1>} />
+          <Route element={<ForgotPassword />} path="/forgot-password" />
+          <Route element={<ChangePassword />} path="/change-password" />
         </Routes>
       </BrowserRouter>
     </div>
