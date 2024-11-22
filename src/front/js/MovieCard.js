@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
@@ -10,6 +10,28 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
   const [favorited, setFavorited] = useState(false); // Para manejar el efecto de agregado a favoritos
 
   const fallbackImage = "https://placehold.co/300x450";
+
+  useEffect(() => {
+    const checkFavoriteStatus = async () => {
+      if (!isAuthenticated) return;
+
+      try {
+        const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        });
+        if (response.ok) {
+          const favorites = await response.json();
+          setIsFavorite(favorites.some(fav => fav.movie_id === id.toString()));
+        }
+      } catch (error) {
+        console.error("Error checking favorite status:", error);
+      }
+    };
+
+    checkFavoriteStatus();
+  }, [id, isAuthenticated]);
 
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) {

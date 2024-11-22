@@ -7,13 +7,18 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    // Recuperar token y usuario desde el localStorage
     const token = localStorage.getItem("token");
-    const savedUser = JSON.parse(localStorage.getItem("user")); // Asegurarse de que el usuario esté guardado
+    const savedUserStr = localStorage.getItem("user");
 
-    if (token && savedUser) {
-      setIsAuthenticated(true);
-      setUser(savedUser); // Establecer el usuario recuperado en el estado
+    try {
+      if (token && savedUserStr) {
+        const savedUser = JSON.parse(savedUserStr);
+        setIsAuthenticated(true);
+        setUser(savedUser);
+      }
+    } catch (error) {
+      console.error("Error parsing user data:", error);
+      localStorage.removeItem("user"); // Clear invalid data
     }
   }, []);
 
