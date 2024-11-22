@@ -1,11 +1,10 @@
 import React from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import { GoogleOAuthProvider } from '@react-oauth/google'; // Importar el GoogleOAuthProvider
-
+import { BrowserRouter, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Private from "./Private";
 import RegisterUser from "./auth/Signup";
-import MovieDetail from "./MovieDetail";
+import MovieDetail from "./MovieDetail"
+
 import Login from "./auth/Login";
 import Logout from "./auth/Logout";
 import Favorites from "./Favorite";
@@ -15,8 +14,6 @@ const Layout = () => {
 
   return (
     <div>
-
-      {/* <GoogleOAuthProvider clientId="693442981264-1knfjdrd93nirvo85re8qhl7qguhgce0.apps.googleusercontent.com"> */}
       <BrowserRouter basename={basename}>
         <Logout />
         <Routes>
@@ -29,7 +26,6 @@ const Layout = () => {
           <Route element={<h1>Not found!</h1>} />
         </Routes>
       </BrowserRouter>
-      {/* </GoogleOAuthProvider> */}
     </div>
   );
 };

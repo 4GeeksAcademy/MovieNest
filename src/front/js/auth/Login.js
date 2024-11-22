@@ -3,7 +3,6 @@ import { useAuth } from "../AuthContext";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-// import { GoogleLogin } from "@react-oauth/google"; 
 import '../../styles/login.css';
 
 function Login() {
@@ -36,43 +35,46 @@ function Login() {
     setErrorMessage("");
     setEmailError("");
     setPasswordError("");
-
+  
     if (!inputValues.email || !inputValues.password) {
       setErrorMessage("Please fill all fields");
       return;
     }
-
+  
     if (!validateEmail(inputValues.email)) {
       setEmailError("Please enter a valid email");
       return;
     }
-
+  
     if (!validatePassword(inputValues.password)) {
       setPasswordError("Password must be at least 6 characters");
       return;
     }
-
+  
     try {
       const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json",  
         },
-        body: JSON.stringify(inputValues),
+        body: JSON.stringify(inputValues),  
       });
-
+  
       if (!rawResponse.ok) {
         const errorData = await rawResponse.json();
         throw new Error(errorData.message || "Login Failed");
       }
-
+  
       const translatedResponse = await rawResponse.json();
       const token = translatedResponse.access_token;
-      const username = translatedResponse.username;
-
+      const user = {
+        username: translatedResponse.username,
+       
+      };
+  
       if (token) {
-        login(token, { username });
-        navigate("/");
+        login(token, user);  
+        navigate("/");  
       } else {
         setErrorMessage("Login Failed");
       }
@@ -81,36 +83,7 @@ function Login() {
       setErrorMessage(error.message || "An error occurred during login");
     }
   };
-
-
-  // const handleGoogleLogin = async (response) => {
-  //   try {
-  //     const { credential } = response;
-  //     const rawResponse = await fetch(`${process.env.BACKEND_URL}/api/google-login`, {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ token: credential }),
-  //     });
-
-  //     if (!rawResponse.ok) {
-  //       throw new Error("Google login failed");
-  //     }
-
-  //     const translatedResponse = await rawResponse.json();
-  //     const token = translatedResponse.access_token;
-  //     const username = translatedResponse.username;
-
-  //     if (token) {
-  //       login(token, { username });
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //     setErrorMessage("Google login failed");
-  //   }
-  // };
+  
 
   return (
     <div>
@@ -163,12 +136,6 @@ function Login() {
           <button onClick={onLogin} className="login-button">
             Sign In
           </button>
-
-
-          {/* <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => setErrorMessage("Google login failed")}
-          /> */}
         </div>
       </div>
     </div>

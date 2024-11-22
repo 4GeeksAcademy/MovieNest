@@ -4,10 +4,6 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 from api.blacklist import blacklist
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash , check_password_hash
-# import google.auth.transport.requests
-# from google.auth import jwt
-# from google.auth.transport.requests import Request
-# from google.oauth2 import id_token
 
 app = Flask(__name__)
 
@@ -17,37 +13,7 @@ api = Blueprint('api', __name__)
 
 CORS(api)
 
-# @app.route("/google-signup", methods=["POST"])
-# def google_login():
-#     token = request.json.get("token")
-#     try:
-#         # Define tu CLIENT_ID que es el que obtuviste en la consola de Google Cloud
-#         CLIENT_ID = "693442981264-1knfjdrd93nirvo85re8qhl7qguhgce0.apps.googleusercontent.com"
 
-#         # Verifica el token y obtiene la información del usuario
-#         request = Request()  # Importante para validar el token correctamente
-#         id_info = id_token.verify_oauth2_token(token, request, CLIENT_ID)
-        
-#         # Aquí tienes la información del usuario, como el email y el nombre
-#         user_email = id_info["email"]
-#         user_name = id_info.get("name", "Usuario")
-
-#         # Verificar si el usuario ya existe
-#         user = User.query.filter_by(email=user_email).first()
-#         if user is None:
-#             # Si el usuario no existe, crear un nuevo usuario
-#             user = User(email=user_email, username=user_name)
-#             db.session.add(user)
-#             db.session.commit()
-
-#         # Crear un token de acceso para la sesión
-#         access_token = create_access_token(identity=user.id)
-
-#         # Responder con el token de acceso y el nombre de usuario
-#         return jsonify({"access_token": access_token, "username": user.username})
-
-#     except Exception as e:
-#         return jsonify({"error": "Invalid token", "message": str(e)}), 401
 
 @api.route('/login', methods=['POST'])
 def login_user():
@@ -55,31 +21,34 @@ def login_user():
     email = request_data.get("email")
     password = request_data.get("password")
 
+    # Buscar al usuario por email
     user = User.query.filter_by(email=email).first()
 
+    # Verificar las credenciales
     if user and check_password_hash(user.password, password):
+        # Crear el access_token
         access_token = create_access_token(identity=user.id)
+
+        # Devolver el token y el nombre de usuario
         return jsonify({
             "access_token": access_token,
-            "username": user.username  
+            "username": user.username  # Devolver el nombre de usuario
         }), 200
 
     return jsonify({"message": "Invalid user or password"}), 404
 
+
 @api.route('/signup', methods=['POST'])
 def create_user():
     try:
-        # Obtener los datos enviados en la solicitud
         data = request.get_json()
         email = data.get('email')
         password = data.get('password')
-        username = data.get('username')  # Obtener el username
+        username = data.get('username')
 
-        # Validar los datos (asegurarse de que no estén vacíos)
         if not email or not password or not username:
             return jsonify({"message": "Email, password, and username are required"}), 400
 
-        # Verificar si el usuario o el username ya existen
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             return jsonify({"message": "User already exists"}), 400
@@ -88,22 +57,15 @@ def create_user():
         if existing_username:
             return jsonify({"message": "Username already taken"}), 400
 
-        # Crear un nuevo usuario
         new_user = User(email=email, password=generate_password_hash(password), username=username)
 
-        # Agregar el nuevo usuario a la base de datos
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-        except Exception as db_error:
-            print(f"Error adding user to the database: {db_error}")
-            db.session.rollback()
-            return jsonify({"message": "Database error"}), 500
+        db.session.add(new_user)
+        db.session.commit()
 
-        # Retornar mensaje de éxito
         return jsonify({
             "message": "User created successfully. You can now log in.",
-            "username": new_user.username  # Incluir el username en la respuesta
+            "access_token": create_access_token(identity=new_user.id),  # Token generado aquí
+            "username": new_user.username  # Asegúrate de que el `username` esté incluido
         }), 201
 
     except Exception as e:
@@ -157,36 +119,23 @@ def add_favorite():
     return jsonify(new_favorite.serialize()), 201
 
 
-# @api.route('/favorites/<int:movie_id>', methods=['DELETE'])
-# @jwt_required()
-# def delete_favorite(movie_id):
-#     user_id = get_jwt_identity()  # Get user ID from JWT token
-
-#     # Find the favorite by both user_id and movie_id
-#     favorite = Favorite.query.filter_by(user_id=user_id, movie_id=str(movie_id)).first()
-    
-#     if not favorite:
-#         # If the favorite isn't found, return a 404 response
-#         return jsonify({"message": "Favorite not found"}), 404
-
-#     # If found, delete it
-#     db.session.delete(favorite)
-#     db.session.commit()
-
-#     # Return success message with the serialized favorite
-#     return jsonify({"message": "Favorite deleted successfully"}), 200
-
 @api.route('/favorites/<int:movie_id>', methods=['DELETE'])
 @jwt_required()
 def delete_favorite(movie_id):
-    user_id = get_jwt_identity()
-    favorite = Favorite.query.filter_by(user_id=user_id, movie_id=movie_id).first()
+    user_id = get_jwt_identity()  # Get user ID from JWT token
+
+    # Find the favorite by both user_id and movie_id
+    favorite = Favorite.query.filter_by(user_id=user_id, movie_id=str(movie_id)).first()
     
     if not favorite:
+        # If the favorite isn't found, return a 404 response
         return jsonify({"message": "Favorite not found"}), 404
 
+    # If found, delete it
     db.session.delete(favorite)
     db.session.commit()
+
+    # Return success message with the serialized favorite
     return jsonify({"message": "Favorite deleted successfully"}), 200
 
 @api.route('/favorites', methods=['GET'])

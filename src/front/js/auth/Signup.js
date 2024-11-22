@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
 import Navbar from "../Navbar";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-// import { GoogleLogin } from "@react-oauth/google";  
 import '../../styles/signup.css';
 
 const RegisterUser = () => {
@@ -34,12 +33,12 @@ const RegisterUser = () => {
     e.preventDefault();
     setError(null);
     setIsLoading(true);
-
+  
     if (!validateForm()) {
       setIsLoading(false);
       return;
     }
-
+  
     try {
       const signupResponse = await fetch(`${process.env.BACKEND_URL}/api/signup`, {
         method: "POST",
@@ -48,38 +47,38 @@ const RegisterUser = () => {
         },
         body: JSON.stringify(inputValues),
       });
-
+  
       if (!signupResponse.ok) {
         const errorResponse = await signupResponse.json();
         throw new Error(errorResponse.message || "Signup failed");
       }
-
-      const loginResponse = await fetch(`${process.env.BACKEND_URL}/api/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: inputValues.email,
-          password: inputValues.password,
-        }),
-      });
-
-      if (!loginResponse.ok) {
-        const loginError = await loginResponse.json();
-        throw new Error(loginError.message || "Login failed after signup");
+  
+      const signupData = await signupResponse.json();
+  
+      
+      const { access_token, username } = signupData;
+  
+      if (access_token && username) {
+        login(access_token, { username });  
+        navigate("/");
       }
-
-      const loginData = await loginResponse.json();
-      login(loginData.token);
-      navigate("/");
-
+  
     } catch (err) {
-      console.error("Error during signup/login:", err);
+      console.error("Error during signup:", err);
       setError(err.message || "An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
+  };
+  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setInputValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setError(null);
   };
 
   return (
@@ -87,35 +86,40 @@ const RegisterUser = () => {
       <Navbar />
       <div className="register-container">
         <div className="register-card">
-          <h1 className="register-title">Sign Up</h1>
+          <h1 className="register-title">Create Your Account</h1>
+
           {error && <div className="error-message">{error}</div>}
 
-          <input
-            type="text"
-            name="username"
-            value={inputValues.username}
-            placeholder="Username"
-            className="register-input"
-            onChange={e => setInputValues({ ...inputValues, username: e.target.value })}
-          />
+          <div className="form-group">
+            <input
+              type="text"
+              name="username"
+              className="register-input"
+              placeholder="Username"
+              value={inputValues.username}
+              onChange={handleInputChange}
+            />
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            value={inputValues.email}
-            placeholder="Email"
-            className="register-input"
-            onChange={e => setInputValues({ ...inputValues, email: e.target.value })}
-          />
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              className="register-input"
+              placeholder="Email"
+              value={inputValues.email}
+              onChange={handleInputChange}
+            />
+          </div>
 
           <div className="password-container">
             <input
               type={passwordVisible ? "text" : "password"}
               name="password"
-              value={inputValues.password}
-              placeholder="Password"
               className="register-input"
-              onChange={e => setInputValues({ ...inputValues, password: e.target.value })}
+              placeholder="Password"
+              value={inputValues.password}
+              onChange={handleInputChange}
             />
             <button
               type="button"
@@ -127,17 +131,9 @@ const RegisterUser = () => {
           </div>
 
           <button onClick={handleRegister} className="register-button" disabled={isLoading}>
-            {isLoading ? "Signing Up..." : "Sign Up"}
+            {isLoading ? "Signing up..." : "Sign Up"}
           </button>
 
-          {/* Componente GoogleLogin comentado */}
-          {/* 
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => setError("Google signup failed")}
-            clientId="693442981264-1knfjdrd93nirvo85re8qhl7qguhgce0.apps.googleusercontent.com" 
-          />
-          */}
         </div>
       </div>
     </div>

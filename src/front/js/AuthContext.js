@@ -8,31 +8,26 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const savedUserStr = localStorage.getItem("user");
+    if (token) {
+      setIsAuthenticated(true);
 
-    try {
-      if (token && savedUserStr) {
-        const savedUser = JSON.parse(savedUserStr);
-        setIsAuthenticated(true);
+      const savedUser = JSON.parse(localStorage.getItem("user"));  
+      if (savedUser) {
         setUser(savedUser);
       }
-    } catch (error) {
-      console.error("Error parsing user data:", error);
-      localStorage.removeItem("user"); // Clear invalid data
     }
   }, []);
 
   const login = (token, user) => {
-    // Guardar el token y el usuario en el localStorage
     localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(user));  
     setUser(user);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem("user");  
     setIsAuthenticated(false);
     setUser(null);
   };

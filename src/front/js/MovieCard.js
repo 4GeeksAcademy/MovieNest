@@ -6,27 +6,32 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [isFavorite, setIsFavorite] = useState(false);
-  const [shake, setShake] = useState(false);  // Para manejar la sacudida del botón
-  const [favorited, setFavorited] = useState(false); // Para manejar el efecto de agregado a favoritos
-
+  const [shake, setShake] = useState(false);  
+  const [favorited, setFavorited] = useState(false); 
   const fallbackImage = "https://placehold.co/300x450";
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
-      if (!isAuthenticated) return;
+      if (isAuthenticated && id) {
+        try {
+          const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          });
 
-      try {
-        const response = await fetch(`${process.env.BACKEND_URL}/api/favorites`, {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
           }
-        });
-        if (response.ok) {
+
           const favorites = await response.json();
-          setIsFavorite(favorites.some(fav => fav.movie_id === id.toString()));
+
+          const isFav = favorites.some(favorite => favorite.movie_id === id.toString());
+          setIsFavorite(isFav);
+        } catch (error) {
+          console.error("Error fetching favorites:", error);
         }
-      } catch (error) {
-        console.error("Error checking favorite status:", error);
       }
     };
 
@@ -35,7 +40,10 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
 
   const handleFavoriteToggle = async () => {
     if (!isAuthenticated) {
+    
       setShake(true);
+
+     
       setTimeout(() => setShake(false), 500);
       return;
     }
@@ -63,9 +71,10 @@ function MovieCard({ id, name, overview, poster, voteAverage, releaseDate, Ref }
       if (response.ok) {
         setIsFavorite(!isFavorite);
         setFavorited(true);
-        setTimeout(() => setFavorited(false), 800);
-      } else {
-        console.error("Error updating favorites:", response.statusText);
+
+      
+        setTimeout(() => setFavorited(false), 800); 
+
       }
     } catch (error) {
       console.error("Error toggling favorite:", error);
